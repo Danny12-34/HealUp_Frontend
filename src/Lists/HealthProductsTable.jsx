@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // For navigation
 
 const HealthProductsTable = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -51,11 +53,18 @@ const HealthProductsTable = () => {
     backgroundColor: '#f9f9f9',
   };
 
-  const imgStyle = {
-    width: '80px',
-    height: '80px',
-    objectFit: 'cover',
-    borderRadius: '8px',
+  const buttonStyle = {
+    padding: '6px 12px',
+    backgroundColor: '#4CAF50',
+    color: 'white',
+    border: 'none',
+    borderRadius: '4px',
+    cursor: 'pointer',
+  };
+
+  const handleViewMore = (product) => {
+    // Redirect to details page with product ID
+    navigate(`/product-details/${product.product_id}`);
   };
 
   return (
@@ -73,7 +82,8 @@ const HealthProductsTable = () => {
               <th style={thStyle}>Name</th>
               <th style={thStyle}>Description</th>
               <th style={thStyle}>Price</th>
-              <th style={thStyle}>Image</th>
+              <th style={thStyle}>Category</th>
+              <th style={thStyle}>Action</th>
             </tr>
           </thead>
           <tbody>
@@ -83,12 +93,11 @@ const HealthProductsTable = () => {
                 <td style={tdStyle}>{product.product_name}</td>
                 <td style={tdStyle}>{product.description}</td>
                 <td style={tdStyle}>${product.price}</td>
+                <td style={tdStyle}>{product.category}</td>
                 <td style={tdStyle}>
-                  <img
-                    src={`http://localhost:5000/uploads/${product.image}`}
-                    alt={product.product_name}
-                    style={imgStyle}
-                  />
+                  <button style={buttonStyle} onClick={() => handleViewMore(product)}>
+                    View More
+                  </button>
                 </td>
               </tr>
             ))}
