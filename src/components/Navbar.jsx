@@ -18,15 +18,17 @@ const Navbar = () => {
           <li><Link to="/about" onClick={() => setIsOpen(false)}>About</Link></li>
           <li><Link to="/healmart" onClick={() => setIsOpen(false)}>HealMart</Link></li>
           <li><Link to="/Home/HealUpLanding" onClick={() => setIsOpen(false)}>Eat & Meal</Link></li>
-          <li><Link to="/healthy-bread" onClick={() => setIsOpen(false)}>Healthy Bread</Link></li>
+          <li><Link to="/Client/bread" onClick={() => setIsOpen(false)}>Healthy Bread</Link></li>
           <li><Link to="/learn" onClick={() => setIsOpen(false)}>Learn</Link></li>
           <li><Link to="/contact" onClick={() => setIsOpen(false)}>Contact</Link></li>          
-          <li><Link to="/manager/dash" onClick={() => setIsOpen(false)}>Manager</Link></li>
-          <li><Link to="/category/manager" onClick={() => setIsOpen(false)}>Categories</Link></li>
+          {/* <li><Link to="/manager/dash" onClick={() => setIsOpen(false)}>Manager</Link></li>
+          {/* <li><Link to="/category/manager" onClick={() => setIsOpen(false)}>Categories</Link></li>
           <li><Link to="/manager/product" onClick={() => setIsOpen(false)}>Product</Link></li>
           <li><Link to="/manager/order" onClick={() => setIsOpen(false)}>OrderManagement</Link></li>
           <li><Link to="/menu/manager" onClick={() => setIsOpen(false)}>Menu</Link></li>
-          <li><Link to="/manager/cases" onClick={() => setIsOpen(false)}>Cases</Link></li> 
+            */} 
+          {/* <li><Link to="/order/bread" onClick={() => setIsOpen(false)}>Bread Ordered/Link</Link></li> */}
+          <li><Link to="/manager/Dashb" onClick={() => setIsOpen(false)}>Manager</Link></li>
           
         </ul>
       </div>

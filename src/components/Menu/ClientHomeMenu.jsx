@@ -31,17 +31,17 @@ export default function HomeMenuPage() {
   };
 
   const displayedItems = items.filter((item) => {
-    // Category filter
+    // ✅ Category filter
     const categoryMatch =
       activeTab === "meals"
-        ? item.category.toLowerCase() === "meal"
+        ? item.category?.toLowerCase() === "meal"
         : activeTab === "beverages"
-        ? item.category.toLowerCase() === "beverage"
+        ? item.category?.toLowerCase() === "beverage"
         : true;
 
-    // Case filter
+    // ✅ Case filter (string comparison now)
     const caseMatch =
-      selectedCase === "" ? true : Number(item.cases) === Number(selectedCase);
+      selectedCase === "" ? true : item.cases === selectedCase;
 
     return categoryMatch && caseMatch;
   });
@@ -110,7 +110,7 @@ export default function HomeMenuPage() {
           >
             <option value="">-- Select Case --</option>
             {cases.map((c) => (
-              <option key={c.id} value={c.id}>
+              <option key={c.id} value={c.case_name}>
                 {c.case_name}
               </option>
             ))}
@@ -137,6 +137,11 @@ export default function HomeMenuPage() {
               <p style={styles.description}>{meal.description}</p>
               <p style={styles.category}>Category: {meal.category}</p>
               <p style={styles.price}>Price: ${meal.price}</p>
+              {meal.cases && (
+                <p style={{ color: "#2980b9", fontWeight: "bold" }}>
+                  Case: {meal.cases}
+                </p>
+              )}
             </div>
           ))
         ) : (

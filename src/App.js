@@ -15,12 +15,16 @@ import ProductDetails from './Lists/ProductDetails';
 import CategoryManager from './ManagerSide/CategoryManager';
 import OrdersManager from './ManagerSide/OrdersManager';
 import ProductManager from './ManagerSide/ProductManager';
+import BreadManager from './ManagerSide/BreadManager';
 import ManagerDashboard from './ManagerSide/ManagerDashboard';
 import Sidebar from './ManagerSide/Sidebar';
 import Layout from "./components/Layout";
+import ManagersDashboard from "./components/Dashboards/Manager/ManagerDashboard";
 import CaseManage from "./components/CasesManager";
 import CartPage from './components/CartPage'; // ✅ import your cart page
 import HealUpLanding from './components/HealUpLanding';
+import Healthbread from './components/Healthbread';
+import BreadOrdersManager from './ManagerSide/BreadOrdersManager';
 
 function App() {
   // ✅ add cart state here
@@ -62,6 +66,11 @@ function App() {
           <Route path="/manager/order" element={<OrdersManager />} />
           <Route path="/manager/cases" element={<CaseManage />} />
           <Route path="/Home/HealUpLanding" element={<HealUpLanding />} />
+          <Route path="/Manager/Dashb" element={<ManagersDashboard />} />
+          <Route path="/Manager/bread" element={<BreadManager />} />
+          <Route path="/Client/bread" element={<Healthbread />} />
+          <Route path="/order/bread" element={< BreadOrdersManager/>} />
+          
         </Routes>
       </div></Layout>
     </Router>
