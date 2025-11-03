@@ -14,6 +14,7 @@ export default function Sidebar({ isOpen }) {
         <li style={styles.menuItem}>💡 Tips</li>
         <li style={styles.menuItem}>🍽 Meals</li>
         <li style={styles.menuItem}>📋 Cases</li>
+        <li style={styles.menuItem}>Manage Users</li>
       </ul>
     </div>
   );

@@ -5,48 +5,55 @@ import axios from "axios";
 const CartPage = ({ cartItems, setCartItems }) => {
   const navigate = useNavigate();
   const [quantities, setQuantities] = useState(cartItems.map(item => item.quantity));
+  const [loading, setLoading] = useState(false);
 
-  // Update quantity
   const handleQuantityChange = (index, value) => {
     const newQuantities = [...quantities];
-    const qty = Math.max(1, parseInt(value) || 1); 
+    const qty = Math.max(1, parseInt(value) || 1);
     newQuantities[index] = qty;
     setQuantities(newQuantities);
 
-    const newCart = [...cartItems];
-    newCart[index].quantity = qty;
-    setCartItems(newCart);
+    const updatedCart = [...cartItems];
+    updatedCart[index].quantity = qty;
+    setCartItems(updatedCart);
   };
 
-  // Remove item
   const handleRemove = (index) => {
-    const newCart = cartItems.filter((_, i) => i !== index);
-    setCartItems(newCart);
-    setQuantities(newCart.map(item => item.quantity));
+    const updatedCart = cartItems.filter((_, i) => i !== index);
+    setCartItems(updatedCart);
+    setQuantities(updatedCart.map(item => item.quantity));
   };
 
-  // Place order function (single or multiple)
   const placeOrder = async (items) => {
     try {
-      for (const item of items) {
+      setLoading(true);
+
+      const requests = items.map(item => {
         const payload = {
           product_id: item.product_id,
           quantity: item.quantity,
           total_price: Number(item.price) * item.quantity,
-          customer_name: "John Doe",      // Replace with real customer data
+          customer_name: "John Doe",
           customer_email: "john@example.com",
           customer_phone: "1234567890",
           status: "Pending"
         };
 
-        await axios.post("http://localhost:5000/api/orders", payload);
-      }
+        return axios.post("http://localhost:5000/api/orders", payload);
+      });
 
-      alert("Order placed successfully!");
+      await Promise.all(requests);
+
+      alert("✅ Order placed successfully!");
       if (items.length === cartItems.length) setCartItems([]);
+
+      navigate("/healmart");
+
     } catch (err) {
       console.error(err);
-      alert("Failed to place order. Please try again.");
+      alert("❌ Failed to place order. Try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -62,6 +69,37 @@ const CartPage = ({ cartItems, setCartItems }) => {
     <div style={{ padding: "50px", fontFamily: "Segoe UI, sans-serif", backgroundColor: "#f9f9f9", minHeight: "100vh" }}>
       <h2 style={{ textAlign: "center", color: "#333", marginBottom: "30px" }}>🛒 Your Cart</h2>
 
+      {loading && (
+        <div style={{ textAlign: "center", marginBottom: "20px" }}>
+          <div className="loader"></div>
+          <p style={{ color: "#555", fontSize: "16px" }}>Processing your order...</p>
+        </div>
+      )}
+
+      <style>
+        {`
+          .loader {
+            border: 6px solid #f3f3f3;
+            border-top: 6px solid #28a745;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: auto;
+          }
+
+          @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+          }
+
+          button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+          }
+        `}
+      </style>
+
       {cartItems.length === 0 ? (
         <p style={{ textAlign: "center", fontSize: "18px", color: "#666" }}>No products in cart.</p>
       ) : (
@@ -71,22 +109,24 @@ const CartPage = ({ cartItems, setCartItems }) => {
               <tr style={{ textAlign: "left", color: "#555" }}>
                 <th style={{ padding: "10px" }}>Product</th>
                 <th style={{ padding: "10px" }}>Price</th>
-                <th style={{ padding: "10px" }}>Quantity</th>
+                <th style={{ padding: "10px" }}>Qty</th>
                 <th style={{ padding: "10px" }}>Total</th>
                 <th style={{ padding: "10px" }}>Action</th>
               </tr>
             </thead>
+
             <tbody>
               {cartItems.map((item, index) => (
-                <tr key={index} style={{ backgroundColor: "#f8f8f8", borderRadius: "10px", transition: "all 0.3s", boxShadow: "0 3px 6px rgba(0,0,0,0.05)" }}>
-                  <td style={{ padding: "12px", fontWeight: "500" }}>{item.product_name}</td>
+                <tr key={index} style={{ backgroundColor: "#f8f8f8", boxShadow: "0 3px 6px rgba(0,0,0,0.05)" }}>
+                  <td style={{ padding: "12px" }}>{item.product_name}</td>
                   <td style={{ padding: "12px" }}>${Number(item.price).toFixed(2)}</td>
                   <td style={{ padding: "12px" }}>
                     <input
                       type="number"
-                      value={quantities[index]}
                       min="1"
-                      style={{ width: "60px", padding: "5px", borderRadius: "6px", border: "1px solid #ccc" }}
+                      value={quantities[index]}
+                      disabled={loading}
+                      style={{ width: "60px", padding: "5px", borderRadius: "6px" }}
                       onChange={(e) => handleQuantityChange(index, e.target.value)}
                     />
                   </td>
@@ -95,37 +135,29 @@ const CartPage = ({ cartItems, setCartItems }) => {
                   </td>
                   <td style={{ padding: "12px" }}>
                     <button
+                      disabled={loading}
                       onClick={() => handleOrderOne(item)}
                       style={{
                         padding: "6px 12px",
-                        marginRight: "5px",
-                        borderRadius: "6px",
-                        border: "none",
                         backgroundColor: "#007bff",
                         color: "#fff",
-                        cursor: "pointer",
-                        fontWeight: "bold",
-                        transition: "0.3s"
+                        borderRadius: "6px",
+                        border: "none",
+                        marginRight: "5px"
                       }}
-                      onMouseOver={e => e.currentTarget.style.backgroundColor="#0056b3"}
-                      onMouseOut={e => e.currentTarget.style.backgroundColor="#007bff"}
                     >
                       Order
                     </button>
                     <button
+                      disabled={loading}
                       onClick={() => handleRemove(index)}
                       style={{
                         padding: "6px 12px",
-                        borderRadius: "6px",
-                        border: "none",
                         backgroundColor: "#dc3545",
                         color: "#fff",
-                        cursor: "pointer",
-                        fontWeight: "bold",
-                        transition: "0.3s"
+                        borderRadius: "6px",
+                        border: "none"
                       }}
-                      onMouseOver={e => e.currentTarget.style.backgroundColor="#b02a37"}
-                      onMouseOut={e => e.currentTarget.style.backgroundColor="#dc3545"}
                     >
                       Remove
                     </button>
@@ -133,48 +165,42 @@ const CartPage = ({ cartItems, setCartItems }) => {
                 </tr>
               ))}
             </tbody>
+
           </table>
 
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "30px" }}>
             <h3>Total: <span style={{ color: "#28a745" }}>${totalPrice.toFixed(2)}</span></h3>
             <div>
               <button
+                disabled={loading}
                 onClick={handleOrderAll}
                 style={{
                   padding: "10px 20px",
                   marginRight: "10px",
-                  border: "none",
-                  borderRadius: "8px",
                   backgroundColor: "#28a745",
                   color: "#fff",
-                  cursor: "pointer",
-                  fontWeight: "bold",
-                  transition: "0.3s"
+                  border: "none",
+                  borderRadius: "8px"
                 }}
-                onMouseOver={e => e.currentTarget.style.backgroundColor="#218838"}
-                onMouseOut={e => e.currentTarget.style.backgroundColor="#28a745"}
               >
                 Order All
               </button>
               <button
+                disabled={loading}
                 onClick={() => navigate("/healmart")}
                 style={{
                   padding: "10px 20px",
-                  border: "none",
-                  borderRadius: "8px",
                   backgroundColor: "#6c757d",
                   color: "#fff",
-                  cursor: "pointer",
-                  fontWeight: "bold",
-                  transition: "0.3s"
+                  border: "none",
+                  borderRadius: "8px"
                 }}
-                onMouseOver={e => e.currentTarget.style.backgroundColor="#5a6268"}
-                onMouseOut={e => e.currentTarget.style.backgroundColor="#6c757d"}
               >
                 Continue Shopping
               </button>
             </div>
           </div>
+
         </div>
       )}
     </div>

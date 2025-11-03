@@ -31,18 +31,14 @@ export default function HomeMenuPage() {
   };
 
   const displayedItems = items.filter((item) => {
-    // ✅ Category filter
     const categoryMatch =
       activeTab === "meals"
         ? item.category?.toLowerCase() === "meal"
         : activeTab === "beverages"
         ? item.category?.toLowerCase() === "beverage"
         : true;
-
-    // ✅ Case filter (string comparison now)
     const caseMatch =
       selectedCase === "" ? true : item.cases === selectedCase;
-
     return categoryMatch && caseMatch;
   });
 
@@ -68,7 +64,9 @@ export default function HomeMenuPage() {
       {/* Toggle Buttons */}
       <div style={styles.toggleContainer}>
         <button
-          style={activeTab === "all" ? styles.activeToggleButton : styles.toggleButton}
+          style={
+            activeTab === "all" ? styles.activeToggleButton : styles.toggleButton
+          }
           onClick={() => {
             setActiveTab("all");
             setSelectedCase("");
@@ -77,7 +75,11 @@ export default function HomeMenuPage() {
           All
         </button>
         <button
-          style={activeTab === "meals" ? styles.activeToggleButton : styles.toggleButton}
+          style={
+            activeTab === "meals"
+              ? styles.activeToggleButton
+              : styles.toggleButton
+          }
           onClick={() => {
             setActiveTab("meals");
             setSelectedCase("");
@@ -86,7 +88,11 @@ export default function HomeMenuPage() {
           Meals
         </button>
         <button
-          style={activeTab === "beverages" ? styles.activeToggleButton : styles.toggleButton}
+          style={
+            activeTab === "beverages"
+              ? styles.activeToggleButton
+              : styles.toggleButton
+          }
           onClick={() => {
             setActiveTab("beverages");
             setSelectedCase("");
@@ -123,25 +129,29 @@ export default function HomeMenuPage() {
         {displayedItems.length > 0 ? (
           displayedItems.map((meal) => (
             <div key={meal.id} style={styles.card}>
-              <div style={styles.imageContainer}>
-                <img
-                  src={`http://localhost:5000/uploads/${meal.photo}`}
-                  alt={meal.product_name}
-                  style={styles.image}
-                  onError={(e) => {
-                    e.target.src = "/placeholder.png";
-                  }}
-                />
+              <div style={styles.cardContent}>
+                <div style={styles.imageContainer}>
+                  <img
+                    src={`http://localhost:5000/uploads/${meal.photo}`}
+                    alt={meal.product_name}
+                    style={styles.image}
+                    onError={(e) => {
+                      e.target.src = "/placeholder.png";
+                    }}
+                  />
+                </div>
+                <div style={styles.textContent}>
+                  <h3 style={styles.mealName}>{meal.product_name}</h3>
+                  <p style={styles.description}>{meal.description}</p>
+                  <p style={styles.category}>Category: {meal.category}</p>
+                  <p style={styles.price}>Price: ${meal.price}</p>
+                  {meal.cases && (
+                    <p style={{ color: "#2980b9", fontWeight: "bold" }}>
+                      Case: {meal.cases}
+                    </p>
+                  )}
+                </div>
               </div>
-              <h3 style={styles.mealName}>{meal.product_name}</h3>
-              <p style={styles.description}>{meal.description}</p>
-              <p style={styles.category}>Category: {meal.category}</p>
-              <p style={styles.price}>Price: ${meal.price}</p>
-              {meal.cases && (
-                <p style={{ color: "#2980b9", fontWeight: "bold" }}>
-                  Case: {meal.cases}
-                </p>
-              )}
             </div>
           ))
         ) : (
@@ -160,7 +170,11 @@ export default function HomeMenuPage() {
 }
 
 const styles = {
-  container: { fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif", backgroundColor: "#f4f7f9", minHeight: "100vh" },
+  container: {
+    fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+    backgroundColor: "#f4f7f9",
+    minHeight: "100vh",
+  },
   hero: {
     backgroundImage:
       "linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1950&q=80')",
@@ -168,11 +182,16 @@ const styles = {
     backgroundPosition: "center",
     padding: "60px 20px",
     textAlign: "center",
-    color: "#fff"
+    color: "#fff",
   },
   heroTitle: { fontSize: "3rem", fontWeight: "bold" },
   heroSubtitle: { fontSize: "1.2rem", marginTop: "10px" },
-  descriptionSection: { textAlign: "center", padding: "20px", fontSize: "1.1rem", color: "#555" },
+  descriptionSection: {
+    textAlign: "center",
+    padding: "20px",
+    fontSize: "1.1rem",
+    color: "#555",
+  },
   toggleContainer: { textAlign: "center", marginBottom: "20px" },
   toggleButton: {
     padding: "10px 20px",
@@ -182,7 +201,7 @@ const styles = {
     borderRadius: "8px",
     margin: "0 5px",
     cursor: "pointer",
-    fontSize: "1rem"
+    fontSize: "1rem",
   },
   activeToggleButton: {
     padding: "10px 20px",
@@ -192,25 +211,65 @@ const styles = {
     borderRadius: "8px",
     margin: "0 5px",
     cursor: "pointer",
-    fontSize: "1rem"
+    fontSize: "1rem",
   },
   dropdownContainer: { textAlign: "center", marginBottom: "20px" },
   dropdownLabel: { marginRight: "10px", fontSize: "1rem", fontWeight: "bold" },
   dropdown: { padding: "8px 12px", fontSize: "1rem", borderRadius: "6px" },
-  mealList: { display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "25px", padding: "10px" },
+
+  // ✅ 3 cards per row grid
+  mealList: {
+    display: "grid",
+    gridTemplateColumns: "repeat(3, 1fr)",
+    gap: "25px",
+    padding: "20px 40px",
+  },
+
+  // ✅ Card style with photo on left
   card: {
     backgroundColor: "#fff",
     borderRadius: "12px",
-    padding: "15px",
     boxShadow: "0 6px 15px rgba(0,0,0,0.1)",
     transition: "transform 0.3s ease, box-shadow 0.3s ease",
-    textAlign: "center"
+    overflow: "hidden",
+    height: "200px",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
   },
-  imageContainer: { overflow: "hidden", borderRadius: "12px", marginBottom: "15px" },
-  image: { width: "100%", height: "180px", objectFit: "cover" },
+  cardContent: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  imageContainer: {
+    flex: "0 0 40%",
+    overflow: "hidden",
+    height: "200px",
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+    objectFit: "cover",
+  },
+  textContent: {
+    flex: "1",
+    padding: "15px",
+  },
   mealName: { color: "#2c3e50", fontSize: "1.2rem", margin: "8px 0" },
-  description: { color: "#7f8c8d", fontSize: "0.95rem", minHeight: "50px" },
+  description: { color: "#7f8c8d", fontSize: "0.95rem", minHeight: "40px" },
   category: { color: "#16a085", fontWeight: "bold", fontSize: "0.9rem" },
-  price: { color: "#e67e22", fontWeight: "bold", fontSize: "1rem", marginTop: "5px" },
-  footer: { textAlign: "center", padding: "20px", backgroundColor: "#059669", color: "#fff", marginTop: "40px" }
+  price: {
+    color: "#e67e22",
+    fontWeight: "bold",
+    fontSize: "1rem",
+    marginTop: "5px",
+  },
+  footer: {
+    textAlign: "center",
+    padding: "20px",
+    backgroundColor: "#059669",
+    color: "#fff",
+    marginTop: "40px",
+  },
 };

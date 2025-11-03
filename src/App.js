@@ -25,6 +25,13 @@ import CartPage from './components/CartPage'; // ✅ import your cart page
 import HealUpLanding from './components/HealUpLanding';
 import Healthbread from './components/Healthbread';
 import BreadOrdersManager from './ManagerSide/BreadOrdersManager';
+import WellnessPage from './components/WellnessPage';
+import Learn from './Learn';
+import Contact from './Contact';
+import Signup from "./components/Signup";
+import VerifyOtp from "./components/VerifyOtp";
+import Login from "./components/Login";
+import UserManagement from './components/UserManagement';
 
 function App() {
   // ✅ add cart state here
@@ -70,6 +77,16 @@ function App() {
           <Route path="/Manager/bread" element={<BreadManager />} />
           <Route path="/Client/bread" element={<Healthbread />} />
           <Route path="/order/bread" element={< BreadOrdersManager/>} />
+          <Route path="/wellness" element={< WellnessPage/>} />
+          <Route path="/Learn" element={< Learn/>} />
+          <Route path="/contact" element={< Contact/>} />
+
+          {/* AUTHENTICATION */}
+
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/verify" element={<VerifyOtp />} />
+          <Route path="/manageusers" element={<UserManagement />} />
+          <Route path="/login" element={<Login />} />
           
         </Routes>
       </div></Layout>

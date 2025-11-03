@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 export default function HealUpLanding() {
   const [images, setImages] = useState([]);
   const [current, setCurrent] = useState(0);
+  const [related, setRelated] = useState([]);
   const navigate = useNavigate();
 
-  // Fetch all meal images
   useEffect(() => {
     const fetchImages = async () => {
       try {
@@ -16,14 +16,14 @@ export default function HealUpLanding() {
           .filter(meal => meal.photo)
           .map(meal => `http://localhost:5000/uploads/${meal.photo}`);
         setImages(imageUrls);
+        setRelated(res.data.slice(0, 6)); // show 6 related items
       } catch (err) {
-        console.error("Error fetching images:", err);
+        console.error(err);
       }
     };
     fetchImages();
   }, []);
 
-  // Auto-slide every 3 seconds
   useEffect(() => {
     if (images.length === 0) return;
     const interval = setInterval(() => {
@@ -33,154 +33,147 @@ export default function HealUpLanding() {
   }, [images]);
 
   return (
-    <div style={{ fontFamily: "'Segoe UI', sans-serif", backgroundColor: "#f9fafb", minHeight: "100vh", padding: "24px" }}>
+    <div style={{ fontFamily: "'Poppins', sans-serif", backgroundColor: "#f5f7fa", minHeight: "100vh", padding: "24px" }}>
       <style>{`
-        .container { max-width: 1100px; margin: 0 auto; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 32px; }
-        .logo-box { display: flex; align-items: center; gap: 12px; }
-        .logo { width: 56px; height: 56px; background: linear-gradient(135deg, #059669, #10b981); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.4rem; }
-        .nav button { margin-left: 8px; padding: 12px 24px; border-radius: 9999px; font-size: 14px; border: none; cursor: pointer; transition: all 0.3s ease; }
-        .btn-order { background: linear-gradient(135deg, #059669, #10b981); color: white; font-weight: 600; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .btn-order:hover { transform: translateY(-2px); box-shadow: 0 6px 12px rgba(0,0,0,0.15); }
-        .btn-light { background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-        .btn-light:hover { background: #f3f4f6; }
+        .container { 
+          max-width: 1100px; 
+          margin: 0 auto; 
+          display: flex; 
+          gap: 24px; 
+          flex-wrap: wrap; 
+        }
 
-        .main { display: flex; flex-direction: column; gap: 32px; align-items: center; }
+        /* Fixed left column */
+        .left-column { 
+          flex: 1; 
+          min-width: 280px; 
+          display: flex; 
+          flex-direction: column; 
+          gap: 24px; 
+          position: sticky;
+          top: 20px;
+          height: fit-content;
+          align-self: flex-start;
+        }
 
-        /* Larger card styles */
+        .right-column { 
+          flex: 2; 
+          min-width: 300px; 
+          display: flex; 
+          flex-direction: column; 
+          gap: 24px; 
+        }
+
         .card { 
-            background: white; 
-            padding: 48px; 
-            padding-bottom: 60px; 
-            border-radius: 16px; 
-            box-shadow: 0 8px 24px rgba(0,0,0,0.1); 
-            width: 100%; 
-            max-width: 900px; 
-            text-align: left; 
-            position: relative; 
+          background: linear-gradient(135deg, #ffffff, #f9fafb); 
+          padding: 24px; 
+          border-radius: 20px; 
+          box-shadow: 0 15px 35px rgba(0,0,0,0.08); 
         }
-        .card h1 { font-size: 2rem; font-weight: bold; color: #1f2937; margin-bottom: 12px; }
-        .card p { font-size: 1.2rem; color: #4b5563; line-height: 1.8; margin-bottom: 32px; }
+        .card h1 { font-size: 1.7rem; font-weight: 700; margin-bottom: 12px; color: #059669; }
+        .card p { font-size: 1rem; color: #4b5563; line-height: 1.6; margin-bottom: 24px; }
 
-        .card-actions {
-            display: flex;
-            gap: 16px;
-            margin-bottom: 40px;
-        }
-        .btn-main-order {
-            padding: 14px 26px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            border: none;
-            cursor: pointer;
-            background-color: #059669;
-            color: white;
-            box-shadow: 0 4px 8px rgba(5, 150, 105, 0.4);
-        }
-        .btn-main-plans {
-            padding: 14px 26px;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            background-color: white;
-            color: #059669;
-            border: 1px solid #d1d5db;
-        }
+        .card-actions { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+        .btn-main-order { background: linear-gradient(135deg, #059669, #10b981); color: white; padding: 12px 24px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s; }
+        .btn-main-order:hover { transform: translateY(-2px); opacity: 0.9; }
+        .btn-main-plans { padding: 12px 24px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; border: 1px solid #10b981; color: #10b981; background: white; transition: all 0.3s; }
+        .btn-main-plans:hover { background: #ecfdf5; }
 
-        /* Feature Boxes Grid */
-        .features-grid {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            width: 100%;
-        }
-        .feature-item {
-            flex: 1;
-            padding: 20px;
-            border-radius: 10px;
-            background: #ffffff;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-            text-align: left;
-            position: relative;
-        }
-        .feature-item strong {
-            font-size: 1rem;
-        }
-        .feature-item span {
-            font-size: 0.9rem;
-        }
-        .feature-icon {
-            position: absolute;
-            top: 18px;
-            left: 12px;
-            font-size: 20px;
-            line-height: 1;
-        }
-        .icon-green { color: #10b981; }
-        .icon-orange { color: #f97316; }
-        .icon-star { color: #10b981; }
+        .features-grid { display: flex; flex-direction: column; gap: 12px; }
+        .feature-item { padding: 12px; border-radius: 16px; background: white; box-shadow: 0 6px 20px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 12px; transition: all 0.3s; cursor: default; }
+        .feature-item:hover { transform: translateX(5px); }
+        .feature-item strong { font-size: 0.95rem; color: #059669; }
+        .feature-item span { font-size: 0.85rem; color: #6b7280; }
 
-        .image-card { position: relative; width: 100%; max-width: 900px; height: 500px; border-radius: 16px; overflow: hidden; box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
-        .image-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
+        .image-card { width: 100%; border-radius: 20px; overflow: hidden; height: 350px; box-shadow: 0 12px 30px rgba(0,0,0,0.12); position: relative; }
+        .image-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; border-radius: 20px; }
         .image-card img:hover { transform: scale(1.05); }
-        .dots { display: flex; justify-content: center; margin-top: 12px; gap: 8px; }
+        .dots { display: flex; justify-content: center; margin-top: 12px; gap: 8px; position: absolute; bottom: 12px; width: 100%; }
         .dot { width: 12px; height: 12px; border-radius: 50%; background: #d1d5db; cursor: pointer; transition: all 0.3s ease; }
-        .dot.active { background: #059669; transform: scale(1.2); }
+        .dot.active { background: #059669; transform: scale(1.3); }
+
+        /* Related Content Styles */
+        .related-section { margin-top: 40px; }
+        .related-header { font-size: 1.5rem; font-weight: 700; margin-bottom: 16px; color: #1f2937; }
+        .related-grid { display: flex; gap: 16px; flex-wrap: wrap; }
+        .related-card { flex: 1 1 calc(33.33% - 16px); background: linear-gradient(145deg, #ffffff, #f0fdf4); border-radius: 16px; box-shadow: 0 6px 20px rgba(0,0,0,0.08); overflow: hidden; cursor: pointer; transition: all 0.4s; }
+        .related-card:hover { transform: translateY(-6px); box-shadow: 0 12px 30px rgba(0,0,0,0.15); }
+        .related-card img { width: 100%; height: 160px; object-fit: cover; }
+        .related-card-content { padding: 12px; }
+        .related-card-content h3 { font-size: 1rem; font-weight: 600; margin-bottom: 4px; color: #059669; }
+        .related-card-content p { font-size: 0.85rem; color: #4b5563; }
       `}</style>
 
+      <main className="container">
+        {/* Left Column */}
+        <div className="left-column">
+          <section className="card">
+            <h1>Eat & Heal</h1>
+            <p>Nutritionist-guided meals designed to help prevent and manage lifestyle diseases.</p>
 
-
-      {/* Main Section */}
-      <main className="container main">
-        {/* Text Card */}
-        <section className="card">
-          <h1>Eat & Heal — Nutritionist-Guided Meals</h1>
-          <p>Delicious, balanced meals designed by nutritionists to help you prevent and manage lifestyle diseases.</p>
-
-          {/* Action Buttons */}
-          <div className="card-actions">
-            <button
-              className="btn-main-order"
-              onClick={() => navigate("/HomeMenu/manager")}
-            >
-              Menu
-            </button>
-            <button className="btn-main-plans">See Meal Plans</button>
-          </div>
-
-          {/* Feature Boxes */}
-          <div className="features-grid">
-            <div className="feature-item">
-              <span className="feature-icon icon-green">&#x2756;</span>
-              <div><strong>Fresh Local Ingredients</strong><span>Sourced from Rwandan farmers</span></div>
+            <div className="card-actions">
+              <button className="btn-main-order" onClick={() => navigate("/HomeMenu/manager")}>Menu</button>
+              <button className="btn-main-plans">Meal Plans</button>
             </div>
-            <div className="feature-item">
-              <span className="feature-icon icon-orange">&#x25CF;</span>
-              <div><strong>Nutritionist Approved</strong><span>Meals built around you</span></div>
-            </div>
-            <div className="feature-item">
-              <span className="feature-icon icon-star">&#9733;</span>
-              <div><strong>Balanced Nutrition</strong><span>Macro and micronutrient focused</span></div>
-            </div>
-          </div>
-        </section>
 
-        {/* Image Slider */}
-        <figure className="image-card">
-          {images.length > 0 ? (
-            <img src={images[current]} alt={`healthy meal ${current + 1}`} />
-          ) : (
-            <p style={{ textAlign: "center", paddingTop: "200px" }}>Loading images...</p>
-          )}
-          <div className="dots">
-            {images.map((_, idx) => (
-              <span key={idx} className={`dot ${current === idx ? "active" : ""}`} onClick={() => setCurrent(idx)}></span>
-            ))}
-          </div>
-        </figure>
+            <div className="features-grid">
+              <div className="feature-item">
+                <span>&#x1F33F;</span>
+                <div>
+                  <strong>Fresh Ingredients</strong>
+                  <span>Locally sourced</span>
+                </div>
+              </div>
+              <div className="feature-item">
+                <span>&#x1F9C0;</span>
+                <div>
+                  <strong>Nutritionist Approved</strong>
+                  <span>Tailored for you</span>
+                </div>
+              </div>
+              <div className="feature-item">
+                <span>&#x2728;</span>
+                <div>
+                  <strong>Balanced Nutrition</strong>
+                  <span>Macro & micronutrients</span>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        {/* Right Column - Image Slider */}
+        <div className="right-column">
+          <figure className="image-card">
+            {images.length > 0 ? (
+              <img src={images[current]} alt={`healthy meal ${current + 1}`} />
+            ) : (
+              <p style={{ textAlign: "center", paddingTop: "140px" }}>Loading images...</p>
+            )}
+            <div className="dots">
+              {images.map((_, idx) => (
+                <span key={idx} className={`dot ${current === idx ? "active" : ""}`} onClick={() => setCurrent(idx)}></span>
+              ))}
+            </div>
+          </figure>
+        </div>
       </main>
+
+      {/* Related Content Section */}
+      <section className="related-section container">
+        <h2 className="related-header">Related Meals & Tips</h2>
+        <div className="related-grid">
+          {related.map((item, idx) => (
+            <div key={idx} className="related-card" onClick={() => navigate(`/meal/${item.id}`)}>
+              <img src={`http://localhost:5000/uploads/${item.photo}`} alt={item.name} />
+              <div className="related-card-content">
+                <h3>{item.name}</h3>
+                <p>{item.description?.substring(0, 60)}...</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

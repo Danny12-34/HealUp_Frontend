@@ -133,6 +133,7 @@ const ProductManager = () => {
                         <a href="/manager/cases" style={styles.navLink}>Manage Cases</a>
                         <a href="/Manager/bread" style={styles.navLink}>Manage Bread</a>
                         <a href="/order/bread" style={styles.navLink}>Bread Ordered</a>
+                        <a href="/manageusers" style={styles.navLink}>Manage Users</a>
                     </nav>
                 </aside>
             )}

@@ -93,6 +93,7 @@ export default function BreadOrdersManager() {
             <a href="/menu/manager" style={styles.navLink}>Manage Menu</a>
             <a href="/manager/cases" style={styles.navLink}>Manage Cases</a>
             <a href="/order/bread" style={styles.navLink}>Bread Ordered</a>
+            <a href="/manageusers" style={styles.navLink}>Manage Users</a>
           </nav>
         </aside>
       )}
@@ -133,7 +134,10 @@ export default function BreadOrdersManager() {
                       >
                         <option value="Pending">Pending</option>
                         <option value="Complete">Complete</option>
+                        <option value="Accepted">Accepted</option>
+                        <option value="Rejected">Rejected</option>
                         <option value="Canceled">Canceled</option>
+                        
                       </select>
                     </p>
                   </div>

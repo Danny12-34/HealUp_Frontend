@@ -75,6 +75,7 @@ const OrdersManager = () => {
             <a href="/manager/cases" style={styles.navLink}>Manage Cases</a>
             <a href="/Manager/bread" style={styles.navLink}>Manage Bread</a>
             <a href="/order/bread" style={styles.navLink}>Bread Ordered</a>
+            <a href="/manageusers" style={styles.navLink}>Manage Users</a>
           </nav>
         </aside>
       )}
@@ -126,6 +127,8 @@ const OrdersManager = () => {
                                         >
                                             <option value="Pending">Pending</option>
                                             <option value="Completed">Completed</option>
+                                            <option value="Accepted">Accepted</option>
+                                            <option value="Rejected">Rejected</option>
                                             <option value="Cancel">Cancel</option>
                                         </select>
                                     </div>
