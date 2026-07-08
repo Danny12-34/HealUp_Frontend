@@ -24,7 +24,7 @@ export default function MealsPage() {
 
   const fetchMeals = async () => {
     try {
-      const res = await axios.get("http://https://healupbackend-production.up.railway.app/api/meals");
+      const res = await axios.get("https://healupbackend-production.up.railway.app/api/meals");
       setMeals(res.data);
     } catch (err) {
       console.error("Error fetching meals:", err);
@@ -34,7 +34,7 @@ export default function MealsPage() {
   const fetchCases = async () => {
     try {
       // Assuming 'case_id' and 'case_name' exist on the case objects
-      const res = await axios.get("http://https://healupbackend-production.up.railway.app/api/cases");
+      const res = await axios.get("https://healupbackend-production.up.railway.app/api/cases");
       setCasesList(res.data);
     } catch (err) {
       console.error("Error fetching cases:", err);
@@ -63,12 +63,12 @@ export default function MealsPage() {
 
     try {
       if (editingMealId) {
-        await axios.put(`http://https://healupbackend-production.up.railway.app/api/meals/${editingMealId}`, data, {
+        await axios.put(`https://healupbackend-production.up.railway.app/api/meals/${editingMealId}`, data, {
           headers: { "Content-Type": "multipart/form-data" }
         });
         setEditingMealId(null);
       } else {
-        await axios.post("http://https://healupbackend-production.up.railway.app/api/meals", data, {
+        await axios.post("https://healupbackend-production.up.railway.app/api/meals", data, {
           headers: { "Content-Type": "multipart/form-data" }
         });
       }
@@ -99,7 +99,7 @@ export default function MealsPage() {
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this meal?")) return;
     try {
-      await axios.delete(`http://https://healupbackend-production.up.railway.app/api/meals/${id}`);
+      await axios.delete(`https://healupbackend-production.up.railway.app/api/meals/${id}`);
       fetchMeals();
     } catch (err) {
       console.error("Error deleting meal:", err);
@@ -230,7 +230,7 @@ export default function MealsPage() {
               <div key={meal.id} style={styles.card}>
                 <div style={styles.imageContainer}>
                   <img
-                    src={meal.photo ? `http://https://healupbackend-production.up.railway.app/uploads/${meal.photo}` : "/placeholder.png"}
+                    src={meal.photo ? `https://healupbackend-production.up.railway.app/uploads/${meal.photo}` : "/placeholder.png"}
                     alt={meal.product_name}
                     style={styles.image}
                     onError={(e) => {
