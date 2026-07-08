@@ -18,7 +18,7 @@ export default function Login() {
     setMessage("");
 
     try {
-      const res = await axios.post("http://healupbackend-production.up.railway.app/api/auth/login", form);
+      const res = await axios.post("http://https://healupbackend-production.up.railway.app/api/auth/login", form);
 
       // Save token if returned
       if (res.data.token) localStorage.setItem("token", res.data.token);

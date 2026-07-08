@@ -56,7 +56,7 @@ export default function Healthbread() {
 
   const fetchBreads = async () => {
     try {
-      const res = await axios.get("http://healupbackend-production.up.railway.app/api/breads");
+      const res = await axios.get("http://https://healupbackend-production.up.railway.app/api/breads");
       setBreads(res.data);
       setFilteredBreads(res.data);
     } catch (err) {
@@ -66,7 +66,7 @@ export default function Healthbread() {
 
   const fetchCases = async () => {
     try {
-      const res = await axios.get("http://healupbackend-production.up.railway.app/api/cases");
+      const res = await axios.get("http://https://healupbackend-production.up.railway.app/api/cases");
       setCases(res.data);
     } catch (err) {
       console.error("Error fetching cases:", err);
@@ -123,7 +123,7 @@ export default function Healthbread() {
 
     try {
       for (const bread of cart) {
-        await axios.post("http://healupbackend-production.up.railway.app/api/bread-orders", {
+        await axios.post("http://https://healupbackend-production.up.railway.app/api/bread-orders", {
           bread_id: bread.id,
           bread_name: bread.bread_description,
           price: bread.price,
@@ -263,7 +263,7 @@ export default function Healthbread() {
               <div key={bread.id} style={dynamicStyles.card}>
                 <div style={dynamicStyles.imageContainer}>
                   <img
-                    src={bread.photo ? `http://healupbackend-production.up.railway.app/uploads/${bread.photo}` : "/placeholder.png"}
+                    src={bread.photo ? `http://https://healupbackend-production.up.railway.app/uploads/${bread.photo}` : "/placeholder.png"}
                     alt={bread.bread_description}
                     style={dynamicStyles.image}
                   />

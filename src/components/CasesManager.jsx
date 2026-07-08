@@ -15,7 +15,7 @@ export default function CasesManager() {
   const fetchCases = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://healupbackend-production.up.railway.app/api/cases");
+      const res = await axios.get("http://https://healupbackend-production.up.railway.app/api/cases");
       setCases(res.data);
     } catch (err) {
       console.error("Error fetching cases:", err);
@@ -29,9 +29,9 @@ export default function CasesManager() {
 
     try {
       if (editingCaseId) {
-        await axios.put(`http://healupbackend-production.up.railway.app/api/cases/${editingCaseId}`, { case_name: caseName });
+        await axios.put(`http://https://healupbackend-production.up.railway.app/api/cases/${editingCaseId}`, { case_name: caseName });
       } else {
-        await axios.post("http://healupbackend-production.up.railway.app/api/cases", { case_name: caseName });
+        await axios.post("http://https://healupbackend-production.up.railway.app/api/cases", { case_name: caseName });
       }
       setCaseName("");
       setEditingCaseId(null);
@@ -49,7 +49,7 @@ export default function CasesManager() {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this case?")) return;
     try {
-      await axios.delete(`http://healupbackend-production.up.railway.app/api/cases/${id}`);
+      await axios.delete(`http://https://healupbackend-production.up.railway.app/api/cases/${id}`);
       fetchCases();
     } catch (err) {
       console.error("Error deleting case:", err);

@@ -9,7 +9,7 @@ const GrainProductsTable = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://healupbackend-production.up.railway.app/api/products');
+        const response = await axios.get('http://https://healupbackend-production.up.railway.app/api/products');
         // Filter products with category "Grain"
         const grainProducts = response.data.filter(
           (product) => product.category && product.category.toLowerCase() === 'grain'
@@ -85,7 +85,7 @@ const GrainProductsTable = () => {
                 <td style={tdStyle}>${product.price}</td>
                 <td style={tdStyle}>
                   <img 
-                    src={`http://healupbackend-production.up.railway.app/uploads/${product.image}`} 
+                    src={`http://https://healupbackend-production.up.railway.app/uploads/${product.image}`} 
                     alt={product.product_name} 
                     style={imgStyle} 
                   />

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
-const API_URL = "http://healupbackend-production.up.railway.app/api/orders";
+const API_URL = "http://https://healupbackend-production.up.railway.app/api/orders";
 
 const OrdersManager = () => {
   const [orders, setOrders] = useState([]);

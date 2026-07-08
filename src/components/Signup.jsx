@@ -18,7 +18,7 @@ export default function Signup() {
     setMessage("");
 
     try {
-      const res = await axios.post("http://healupbackend-production.up.railway.app/api/auth/create", form);
+      const res = await axios.post("http://https://healupbackend-production.up.railway.app/api/auth/create", form);
       setMessage(res.data.message);
       setTimeout(() => navigate("/login"), 1500); // go to login after signup
     } catch (err) {

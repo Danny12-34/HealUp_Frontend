@@ -20,7 +20,7 @@ export default function BreadOrdersManager() {
   // Fetch orders
   const fetchOrders = async () => {
     try {
-      const res = await axios.get("http://healupbackend-production.up.railway.app/api/bread-orders");
+      const res = await axios.get("http://https://healupbackend-production.up.railway.app/api/bread-orders");
       setOrders(res.data);
     } catch (err) {
       console.error(err);
@@ -41,7 +41,7 @@ export default function BreadOrdersManager() {
   const handleCreateOrder = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://healupbackend-production.up.railway.app/api/bread-orders", newOrder);
+      const res = await axios.post("http://https://healupbackend-production.up.railway.app/api/bread-orders", newOrder);
       setOrders([res.data, ...orders]);
       setNewOrder({
         bread_id: "",
@@ -61,7 +61,7 @@ export default function BreadOrdersManager() {
   const handleDeleteOrder = async (id) => {
     if (!window.confirm("Are you sure you want to delete this order?")) return;
     try {
-      await axios.delete(`http://healupbackend-production.up.railway.app/api/bread-orders/${id}`);
+      await axios.delete(`http://https://healupbackend-production.up.railway.app/api/bread-orders/${id}`);
       setOrders(orders.filter(order => order.id !== id));
     } catch (err) {
       console.error(err);
@@ -71,7 +71,7 @@ export default function BreadOrdersManager() {
 
   const handleStatusChange = async (id, newStatus) => {
     try {
-      const res = await axios.put(`http://healupbackend-production.up.railway.app/api/bread-orders/${id}/status`, { status: newStatus });
+      const res = await axios.put(`http://https://healupbackend-production.up.railway.app/api/bread-orders/${id}/status`, { status: newStatus });
       setOrders(orders.map(order => order.id === id ? { ...order, status: res.data.status } : order));
     } catch (err) {
       console.error(err);

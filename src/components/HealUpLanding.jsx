@@ -11,10 +11,10 @@ export default function HealUpLanding() {
   useEffect(() => {
     const fetchImages = async () => {
       try {
-        const res = await axios.get("http://healupbackend-production.up.railway.app/api/meals");
+        const res = await axios.get("http://https://healupbackend-production.up.railway.app/api/meals");
         const imageUrls = res.data
           .filter(meal => meal.photo)
-          .map(meal => `http://healupbackend-production.up.railway.app/uploads/${meal.photo}`);
+          .map(meal => `http://https://healupbackend-production.up.railway.app/uploads/${meal.photo}`);
         setImages(imageUrls);
         setRelated(res.data.slice(0, 6)); // show 6 related items
       } catch (err) {
@@ -165,7 +165,7 @@ export default function HealUpLanding() {
         <div className="related-grid">
           {related.map((item, idx) => (
             <div key={idx} className="related-card" onClick={() => navigate(`/meal/${item.id}`)}>
-              <img src={`http://healupbackend-production.up.railway.app/uploads/${item.photo}`} alt={item.name} />
+              <img src={`http://https://healupbackend-production.up.railway.app/uploads/${item.photo}`} alt={item.name} />
               <div className="related-card-content">
                 <h3>{item.name}</h3>
                 <p>{item.description?.substring(0, 60)}...</p>
