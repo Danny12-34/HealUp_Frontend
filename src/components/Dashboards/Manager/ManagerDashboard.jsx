@@ -32,12 +32,12 @@ export default function ManagerDashboard() {
     async function fetchData() {
       try {
         const [cat, prod, ord, tip, meal, cas] = await Promise.all([
-          axios.get("http://localhost:5000/api/categories"),
-          axios.get("http://localhost:5000/api/products"),
-          axios.get("http://localhost:5000/api/orders"),
-          axios.get("http://localhost:5000/api/nutrition-tips"),
-          axios.get("http://localhost:5000/api/meals"),
-          axios.get("http://localhost:5000/api/cases"),
+          axios.get("http://healupbackend-production.up.railway.app/api/categories"),
+          axios.get("http://healupbackend-production.up.railway.app/api/products"),
+          axios.get("http://healupbackend-production.up.railway.app/api/orders"),
+          axios.get("http://healupbackend-production.up.railway.app/api/nutrition-tips"),
+          axios.get("http://healupbackend-production.up.railway.app/api/meals"),
+          axios.get("http://healupbackend-production.up.railway.app/api/cases"),
         ]);
 
         setStats({

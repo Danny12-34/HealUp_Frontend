@@ -39,7 +39,7 @@ const CartPage = ({ cartItems, setCartItems }) => {
           status: "Pending"
         };
 
-        return axios.post("http://localhost:5000/api/orders", payload);
+        return axios.post("http://healupbackend-production.up.railway.app/api/orders", payload);
       });
 
       await Promise.all(requests);

@@ -11,7 +11,7 @@ const ProductDetails = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(`http://localhost:5000/api/products/${id}`);
+        const response = await axios.get(`http://healupbackend-production.up.railway.app/api/products/${id}`);
         setProduct(response.data);
         setLoading(false);
       } catch (err) {
@@ -59,7 +59,7 @@ const ProductDetails = () => {
         }}>
           {product.image ? (
             <img
-              src={`http://localhost:5000/uploads/${product.image}`}
+              src={`http://healupbackend-production.up.railway.app/uploads/${product.image}`}
               alt={product.product_name}
               style={{
                 width: '100%',

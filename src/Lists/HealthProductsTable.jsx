@@ -11,7 +11,7 @@ const HealthProductsTable = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/products');
+        const response = await axios.get('http://healupbackend-production.up.railway.app/api/products');
         // Filter products with category "Health"
         const healthProducts = response.data.filter(
           (product) => product.category && product.category.toLowerCase() === 'health'

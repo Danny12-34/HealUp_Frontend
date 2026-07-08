@@ -21,7 +21,7 @@ const ProductManager = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/products');
+            const response = await axios.get('http://healupbackend-production.up.railway.app/api/products');
             setProducts(response.data || []);
             setLoading(false);
         } catch (err) {
@@ -33,7 +33,7 @@ const ProductManager = () => {
 
     const fetchCategories = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/categories');
+            const response = await axios.get('http://healupbackend-production.up.railway.app/api/categories');
             // Assuming categories have an ID field like category_id and a name like category_name
             setCategories(response.data || []);
         } catch (err) {
@@ -66,11 +66,11 @@ const ProductManager = () => {
 
         try {
             if (editingId) {
-                await axios.put(`http://localhost:5000/api/products/${editingId}`, data, {
+                await axios.put(`http://healupbackend-production.up.railway.app/api/products/${editingId}`, data, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
             } else {
-                await axios.post('http://localhost:5000/api/products', data, {
+                await axios.post('http://healupbackend-production.up.railway.app/api/products', data, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
             }
@@ -86,7 +86,7 @@ const ProductManager = () => {
 
     const handleEdit = async (id) => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/products/${id}`);
+            const response = await axios.get(`http://healupbackend-production.up.railway.app/api/products/${id}`);
             const prod = response.data;
             setFormData({
                 product_name: prod.product_name,
@@ -106,7 +106,7 @@ const ProductManager = () => {
     const handleDelete = async (id) => {
         if (!window.confirm('Are you sure you want to delete this product?')) return;
         try {
-            await axios.delete(`http://localhost:5000/api/products/${id}`);
+            await axios.delete(`http://healupbackend-production.up.railway.app/api/products/${id}`);
             fetchProducts();
         } catch (err) {
             console.error(err);
@@ -214,7 +214,7 @@ const ProductManager = () => {
                                                 <td style={styles.td}>
                                                     {prod.image && (
                                                         <img 
-                                                            src={`http://localhost:5000/uploads/${prod.image}`} 
+                                                            src={`http://healupbackend-production.up.railway.app/uploads/${prod.image}`} 
                                                             alt={prod.product_name} 
                                                             style={styles.productImage} 
                                                         />

@@ -23,7 +23,7 @@ export default function BreadManager() {
 
   const fetchBreads = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/breads");
+      const res = await axios.get("http://healupbackend-production.up.railway.app/api/breads");
       setBreads(res.data);
     } catch (err) {
       console.error("Error fetching breads:", err);
@@ -32,7 +32,7 @@ export default function BreadManager() {
 
   const fetchCases = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/cases");
+      const res = await axios.get("http://healupbackend-production.up.railway.app/api/cases");
       setCases(res.data || []);
     } catch (err) {
       console.error("Error fetching cases:", err);
@@ -63,12 +63,12 @@ export default function BreadManager() {
       if (formData.image) data.append("photo", formData.image); // Match backend field name
 
       if (editingBreadId) {
-        await axios.put(`http://localhost:5000/api/breads/${editingBreadId}`, data, {
+        await axios.put(`http://healupbackend-production.up.railway.app/api/breads/${editingBreadId}`, data, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         setEditingBreadId(null);
       } else {
-        await axios.post("http://localhost:5000/api/breads", data, {
+        await axios.post("http://healupbackend-production.up.railway.app/api/breads", data, {
           headers: { "Content-Type": "multipart/form-data" },
         });
       }
@@ -99,7 +99,7 @@ export default function BreadManager() {
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this bread?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/breads/${id}`);
+      await axios.delete(`http://healupbackend-production.up.railway.app/api/breads/${id}`);
       fetchBreads();
     } catch (err) {
       console.error("Error deleting bread:", err);
@@ -222,7 +222,7 @@ export default function BreadManager() {
               <div key={bread.id} style={styles.card}>
                 <div style={styles.imageContainer}>
                   <img
-                    src={bread.photo ? `http://localhost:5000/uploads/${bread.photo}` : "/placeholder.png"}
+                    src={bread.photo ? `http://healupbackend-production.up.railway.app/uploads/${bread.photo}` : "/placeholder.png"}
                     alt={bread.bread_description}
                     style={styles.image}
                   />

@@ -36,7 +36,7 @@ export default function ManagerDashboard() {
     setError("");
     Promise.all(
       tabs.map((tab) =>
-        fetch(`http://localhost:5000${tab.endpoint}`)
+        fetch(`http://healupbackend-production.up.railway.app${tab.endpoint}`)
           .then((res) => res.json())
           .then((json) => ({ key: tab.key, count: json.length }))
       )

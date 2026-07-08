@@ -16,7 +16,7 @@ export default function VerifyOtp() {
     setMessage("");
 
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/verify-otp", { email, otp });
+      const res = await axios.post("http://healupbackend-production.up.railway.app/api/auth/verify-otp", { email, otp });
       const user = res.data.user;
 
       // Save user info

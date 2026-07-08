@@ -8,7 +8,7 @@ export default function UserManagement() {
   const [message, setMessage] = useState("");
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
-  const API_BASE = "http://localhost:5000/api/auth";
+  const API_BASE = "http://healupbackend-production.up.railway.app/api/auth";
 
   // Fetch all users
   const fetchUsers = async () => {

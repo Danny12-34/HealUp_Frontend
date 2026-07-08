@@ -18,7 +18,7 @@ const CategoryManager = () => {
     // Fetch all categories
     const fetchCategories = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/api/categories');
+            const response = await axios.get('http://healupbackend-production.up.railway.app/api/categories');
             setCategories(response.data || []);
             setLoading(false);
         } catch (err) {
@@ -52,11 +52,11 @@ const CategoryManager = () => {
 
         try {
             if (editingId) {
-                await axios.put(`http://localhost:5000/api/categories/${editingId}`, data, {
+                await axios.put(`http://healupbackend-production.up.railway.app/api/categories/${editingId}`, data, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
             } else {
-                await axios.post('http://localhost:5000/api/categories', data, {
+                await axios.post('http://healupbackend-production.up.railway.app/api/categories', data, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
             }
@@ -73,7 +73,7 @@ const CategoryManager = () => {
     // Edit category
     const handleEdit = async (id) => {
         try {
-            const response = await axios.get(`http://localhost:5000/api/categories/${id}`);
+            const response = await axios.get(`http://healupbackend-production.up.railway.app/api/categories/${id}`);
             const cat = response.data;
             setFormData({
                 category_name: cat.category_name,
@@ -92,7 +92,7 @@ const CategoryManager = () => {
         if (!window.confirm('Are you sure you want to delete this category?')) return;
 
         try {
-            await axios.delete(`http://localhost:5000/api/categories/${id}`);
+            await axios.delete(`http://healupbackend-production.up.railway.app/api/categories/${id}`);
             fetchCategories();
         } catch (err) {
             console.error(err);
@@ -203,7 +203,7 @@ const CategoryManager = () => {
                                         <td style={styles.td}>
                                             {cat.category_image && (
                                                 <img
-                                                    src={`http://localhost:5000/uploads/${cat.category_image}`}
+                                                    src={`http://healupbackend-production.up.railway.app/uploads/${cat.category_image}`}
                                                     alt={cat.category_name}
                                                     style={styles.categoryImage}
                                                 />
