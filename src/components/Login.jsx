@@ -27,20 +27,16 @@ export default function Login() {
 
       const user = res.data.user;
 
-      // If OTP is verified, redirect directly based on role
+      // Directly redirect based on role right after login
       if (user?.role) {
         setTimeout(() => {
           if (user.role.toLowerCase() === "manager") {
             navigate("/manager/Dashb");
-          } else if (user.role.toLowerCase() === "client") {
-            navigate("/mico");
           } else {
-            navigate("/verify", { state: { email: form.email } });
+            // Defaults to the client panel for clients or other standard roles
+            navigate("/mico");
           }
         }, 1000);
-      } else {
-        // If OTP not verified yet, go to verify page
-        setTimeout(() => navigate("/verify", { state: { email: form.email } }), 1000);
       }
 
     } catch (err) {
