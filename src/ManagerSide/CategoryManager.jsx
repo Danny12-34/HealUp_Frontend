@@ -206,7 +206,7 @@ const CategoryManager = () => {
                                                     src={cat.category_image}
                                                     alt={cat.category_name}
                                                     style={styles.categoryImage}
-                                                />
+                                                />  
                                             )}
                                         </td>
                                         <td style={styles.td}>
