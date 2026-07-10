@@ -203,10 +203,10 @@ const CategoryManager = () => {
                                         <td style={styles.td}>
                                             {cat.category_image && (
                                                 <img
-                                                    src={cat.category_image}
+                                                    src={"https://pozixsnnprwgfxankmvt.supabase.co/storage/v1/object/public/categories/1783685348901_1.jpeg"}
                                                     alt={cat.category_name}
                                                     style={styles.categoryImage}
-                                                />  
+                                                />
                                             )}
                                         </td>
                                         <td style={styles.td}>
