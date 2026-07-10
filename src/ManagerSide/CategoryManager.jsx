@@ -9,7 +9,7 @@ const CategoryManager = () => {
 
     const [formData, setFormData] = useState({
         category_name: '',
-        descrition: '',
+        description: '',
         category_image: null
     });
 
@@ -47,7 +47,7 @@ const CategoryManager = () => {
 
         const data = new FormData();
         data.append('category_name', formData.category_name);
-        data.append('descrition', formData.descrition);
+        data.append('description', formData.description);
         if (formData.category_image) data.append('category_image', formData.category_image);
 
         try {
@@ -61,7 +61,7 @@ const CategoryManager = () => {
                 });
             }
 
-            setFormData({ category_name: '', descrition: '', category_image: null });
+            setFormData({ category_name: '', description: '', category_image: null });
             setEditingId(null);
             fetchCategories();
         } catch (err) {
@@ -77,7 +77,7 @@ const CategoryManager = () => {
             const cat = response.data;
             setFormData({
                 category_name: cat.category_name,
-                descrition: cat.descrition,
+                description: cat.description,
                 category_image: null
             });
             setEditingId(id);
@@ -144,9 +144,9 @@ const CategoryManager = () => {
                     />
                     <input
                         type="text"
-                        name="descrition"
+                        name="description"
                         placeholder="Description"
-                        value={formData.descrition}
+                        value={formData.description}
                         onChange={handleChange}
                         required
                         style={styles.input}
@@ -163,7 +163,7 @@ const CategoryManager = () => {
                     {editingId && (
                         <button
                             type="button"
-                            onClick={() => { setEditingId(null); setFormData({ category_name: '', descrition: '', category_image: null }); }}
+                            onClick={() => { setEditingId(null); setFormData({ category_name: '', description: '', category_image: null }); }}
                             style={styles.cancelButton}
                         >
                             Cancel
@@ -199,7 +199,7 @@ const CategoryManager = () => {
                                     >
                                         <td style={styles.td}>{cat.category_id}</td>
                                         <td style={styles.td}>{cat.category_name}</td>
-                                        <td style={styles.td}>{cat.descrition}</td>
+                                        <td style={styles.td}>{cat.description}</td>
                                         <td style={styles.td}>
                                             {cat.category_image && (
                                                 <img
