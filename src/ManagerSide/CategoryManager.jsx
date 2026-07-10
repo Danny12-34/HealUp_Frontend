@@ -203,7 +203,7 @@ const CategoryManager = () => {
                                         <td style={styles.td}>
                                             {cat.category_image && (
                                                 <img
-                                                    src={`https://healupbackend-production.up.railway.app/uploads/${cat.category_image}`}
+                                                    src={cat.category_image}
                                                     alt={cat.category_name}
                                                     style={styles.categoryImage}
                                                 />
