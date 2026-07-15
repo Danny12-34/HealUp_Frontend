@@ -14,7 +14,7 @@ export default function HomeMenuPage() {
 
   const fetchItems = async () => {
     try {
-      const res = await axios.get("https://healupbackend-production.up.railway.app/api/meals");
+      const res = await axios.get("https://heal-up-backend-pi.vercel.app/api/meals");
       setItems(res.data);
     } catch (err) {
       console.error("Error fetching items:", err);
@@ -23,7 +23,7 @@ export default function HomeMenuPage() {
 
   const fetchCases = async () => {
     try {
-      const res = await axios.get("https://healupbackend-production.up.railway.app/api/cases");
+      const res = await axios.get("https://heal-up-backend-pi.vercel.app/api/cases");
       setCases(res.data);
     } catch (err) {
       console.error("Error fetching cases:", err);
@@ -132,7 +132,7 @@ export default function HomeMenuPage() {
               <div style={styles.cardContent}>
                 <div style={styles.imageContainer}>
                   <img
-                    src={`https://healupbackend-production.up.railway.app/uploads/${meal.photo}`}
+                    src={`https://heal-up-backend-pi.vercel.app/uploads/${meal.photo}`}
                     alt={meal.product_name}
                     style={styles.image}
                     onError={(e) => {

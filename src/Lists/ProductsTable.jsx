@@ -9,7 +9,7 @@ const ProductsTable = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get('https://healupbackend-production.up.railway.app/api/products');
+        const response = await axios.get('https://heal-up-backend-pi.vercel.app/api/products');
         // Filter products with category "Nutrition"
         const nutritionProducts = response.data.filter(
           (product) => product.category && product.category.toLowerCase() === 'nutrition'
@@ -85,7 +85,7 @@ const ProductsTable = () => {
                 <td style={tdStyle}>${product.price}</td>
                 <td style={tdStyle}>
                   <img 
-                    src={`https://healupbackend-production.up.railway.app/uploads/${product.image}`} 
+                    src={`https://heal-up-backend-pi.vercel.app/uploads/${product.image}`} 
                     alt={product.product_name} 
                     style={imgStyle} 
                   />

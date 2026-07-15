@@ -18,7 +18,7 @@ const CategoryManager = () => {
     // Fetch all categories
     const fetchCategories = async () => {
         try {
-            const response = await axios.get('https://healupbackend-production.up.railway.app/api/categories');
+            const response = await axios.get('https://heal-up-backend-pi.vercel.app/api/categories');
             setCategories(response.data || []);
             setLoading(false);
         } catch (err) {
@@ -52,11 +52,11 @@ const CategoryManager = () => {
 
         try {
             if (editingId) {
-                await axios.put(`https://healupbackend-production.up.railway.app/api/categories/${editingId}`, data, {
+                await axios.put(`https://heal-up-backend-pi.vercel.app/api/categories/${editingId}`, data, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
             } else {
-                await axios.post('https://healupbackend-production.up.railway.app/api/categories', data, {
+                await axios.post('https://heal-up-backend-pi.vercel.app/api/categories', data, {
                     headers: { 'Content-Type': 'multipart/form-data' }
                 });
             }
@@ -73,7 +73,7 @@ const CategoryManager = () => {
     // Edit category
     const handleEdit = async (id) => {
         try {
-            const response = await axios.get(`https://healupbackend-production.up.railway.app/api/categories/${id}`);
+            const response = await axios.get(`https://heal-up-backend-pi.vercel.app/api/categories/${id}`);
             const cat = response.data;
             setFormData({
                 category_name: cat.category_name,
@@ -92,7 +92,7 @@ const CategoryManager = () => {
         if (!window.confirm('Are you sure you want to delete this category?')) return;
 
         try {
-            await axios.delete(`https://healupbackend-production.up.railway.app/api/categories/${id}`);
+            await axios.delete(`https://heal-up-backend-pi.vercel.app/api/categories/${id}`);
             fetchCategories();
         } catch (err) {
             console.error(err);

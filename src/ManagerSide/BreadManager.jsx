@@ -23,7 +23,7 @@ export default function BreadManager() {
 
   const fetchBreads = async () => {
     try {
-      const res = await axios.get("https://healupbackend-production.up.railway.app/api/breads");
+      const res = await axios.get("https://heal-up-backend-pi.vercel.app/api/breads");
       setBreads(res.data);
     } catch (err) {
       console.error("Error fetching breads:", err);
@@ -32,7 +32,7 @@ export default function BreadManager() {
 
   const fetchCases = async () => {
     try {
-      const res = await axios.get("https://healupbackend-production.up.railway.app/api/cases");
+      const res = await axios.get("https://heal-up-backend-pi.vercel.app/api/cases");
       setCases(res.data || []);
     } catch (err) {
       console.error("Error fetching cases:", err);
@@ -63,12 +63,12 @@ export default function BreadManager() {
       if (formData.image) data.append("photo", formData.image); // Match backend field name
 
       if (editingBreadId) {
-        await axios.put(`https://healupbackend-production.up.railway.app/api/breads/${editingBreadId}`, data, {
+        await axios.put(`https://heal-up-backend-pi.vercel.app/api/breads/${editingBreadId}`, data, {
           headers: { "Content-Type": "multipart/form-data" },
         });
         setEditingBreadId(null);
       } else {
-        await axios.post("https://healupbackend-production.up.railway.app/api/breads", data, {
+        await axios.post("https://heal-up-backend-pi.vercel.app/api/breads", data, {
           headers: { "Content-Type": "multipart/form-data" },
         });
       }
@@ -99,7 +99,7 @@ export default function BreadManager() {
   const handleDelete = async (id) => {
     if (!window.confirm("Delete this bread?")) return;
     try {
-      await axios.delete(`https://healupbackend-production.up.railway.app/api/breads/${id}`);
+      await axios.delete(`https://heal-up-backend-pi.vercel.app/api/breads/${id}`);
       fetchBreads();
     } catch (err) {
       console.error("Error deleting bread:", err);
@@ -222,7 +222,7 @@ export default function BreadManager() {
               <div key={bread.id} style={styles.card}>
                 <div style={styles.imageContainer}>
                   <img
-                    src={bread.photo ? `https://healupbackend-production.up.railway.app/uploads/${bread.photo}` : "/placeholder.png"}
+                    src={bread.photo ? `https://heal-up-backend-pi.vercel.app/uploads/${bread.photo}` : "/placeholder.png"}
                     alt={bread.bread_description}
                     style={styles.image}
                   />

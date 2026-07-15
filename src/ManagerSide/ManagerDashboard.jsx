@@ -36,7 +36,7 @@ export default function ManagerDashboard() {
     setError("");
     Promise.all(
       tabs.map((tab) =>
-        fetch(`https://healupbackend-production.up.railway.app${tab.endpoint}`)
+        fetch(`https://heal-up-backend-pi.vercel.app${tab.endpoint}`)
           .then((res) => res.json())
           .then((json) => ({ key: tab.key, count: json.length }))
       )

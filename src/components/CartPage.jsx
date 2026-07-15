@@ -39,7 +39,7 @@ const CartPage = ({ cartItems, setCartItems }) => {
           status: "Pending"
         };
 
-        return axios.post("https://healupbackend-production.up.railway.app/api/orders", payload);
+        return axios.post("https://heal-up-backend-pi.vercel.app/api/orders", payload);
       });
 
       await Promise.all(requests);

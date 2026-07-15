@@ -18,7 +18,7 @@ const HealMart = ({ cartItems, setCartItems }) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get("https://healupbackend-production.up.railway.app/api/categories");
+        const response = await axios.get("https://heal-up-backend-pi.vercel.app/api/categories");
         setCategories(response.data || []);
       } catch (err) {
         console.error("Error fetching categories:", err);
@@ -27,7 +27,7 @@ const HealMart = ({ cartItems, setCartItems }) => {
 
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("https://healupbackend-production.up.railway.app/api/products");
+        const response = await axios.get("https://heal-up-backend-pi.vercel.app/api/products");
         setProducts(response.data || []);
         setFilteredProducts(response.data || []);
         setLoading(false);
@@ -225,7 +225,7 @@ const HealMart = ({ cartItems, setCartItems }) => {
               }}
             >
               <img
-                src={`https://healupbackend-production.up.railway.app/uploads/${product.image}`}
+                src={`https://heal-up-backend-pi.vercel.app/uploads/${product.image}`}
                 alt={product.product_name}
                 style={{
                   width: "100%",
