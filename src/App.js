@@ -1,95 +1,39 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import About from './components/About';
-import Services from './components/Services';
-import HealMart from './components/HealMart';
-import ProductsTable from './Lists/ProductsTable';
-import GrainProductsTable from './Lists/GrainProductsTable';
-import MealsPage from './components/Menu/MealsPage';
-import HomeMenuPage from './components/Menu/ClientHomeMenu';
-import HealthProductsTable from './Lists/HealthProductsTable';
-import FitnessProductsTable from './Lists/FitnessProductsTable';
-import ProductDetails from './Lists/ProductDetails';
-import CategoryManager from './ManagerSide/CategoryManager';
-import OrdersManager from './ManagerSide/OrdersManager';
-import ProductManager from './ManagerSide/ProductManager';
-import BreadManager from './ManagerSide/BreadManager';
-import ManagerDashboard from './ManagerSide/ManagerDashboard';
-import Sidebar from './ManagerSide/Sidebar';
-import Layout from "./components/Layout";
-import ManagersDashboard from "./components/Dashboards/Manager/ManagerDashboard";
-import CaseManage from "./components/CasesManager";
-import CartPage from './components/CartPage'; // ✅ import your cart page
-import HealUpLanding from './components/HealUpLanding';
-import Healthbread from './components/Healthbread';
-import BreadOrdersManager from './ManagerSide/BreadOrdersManager';
-import WellnessPage from './components/WellnessPage';
-import Learn from './Learn';
-import Contact from './Contact';
-import Signup from "./components/Signup";
-import VerifyOtp from "./components/VerifyOtp";
-import Login from "./components/Login";
-import UserManagement from './components/UserManagement';
+
+import CategoryCreate from './components/Dashboards/Manager/Categories/CategoryCreate';
+import CategoryList from './components/Dashboards/Manager/Categories/CategoryList';
+import MainPhotoCreate from './components/Dashboards/Manager/MainPhoto/MainPhotoCreate';
+import MainPhotoList from './components/Dashboards/Manager/MainPhoto/MainPhotoList';
+import ProductCreate from './components/Dashboards/Manager/Product/ProductCreate';
+import ProductList from './components/Dashboards/Manager/Product/ProductList';
+import ManagerDashboard from './components/Dashboards/Manager/ManagerDashboard';
+import Home from './components/HomePage';
+import HealMate from './components/HealMat';
+import HealUpCafePage from './components/HealUpCafePage';
 
 function App() {
-  // ✅ add cart state here
   const [cartItems, setCartItems] = useState([]);
 
   return (
     <Router>
-      <Layout>
       <div style={{ fontFamily: 'Arial, sans-serif' }}>
-        <Navbar />
         <Routes>
-          <Route path="/" element={<Hero />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
-
-          {/* ✅ Pass cart state into HealMart */}
-          <Route
-            path="/healmart"
-            element={<HealMart cartItems={cartItems} setCartItems={setCartItems} />}
-          />
-
-          {/* ✅ Cart page route */}
-          <Route
-            path="/cart"
-            element={<CartPage cartItems={cartItems} setCartItems={setCartItems} />}
-          />
-
-          <Route path="/nutrition" element={<ProductsTable />} />
-          <Route path="/grain" element={<GrainProductsTable />} />
-          <Route path="/health" element={<HealthProductsTable />} />
-          <Route path="/fitness" element={<FitnessProductsTable />} />
-          <Route path="/category/manager" element={<CategoryManager />} />
-          <Route path="/menu/manager" element={<MealsPage />} />
-          <Route path="/HomeMenu/manager" element={<HomeMenuPage />} />
-          <Route path="/manager/product" element={<ProductManager />} />
-          <Route path="/product-details/:id" element={<ProductDetails />} />
-          <Route path="/manager/dash" element={<ManagerDashboard />} />
-          <Route path="/manager/navigation" element={<Sidebar />} />
-          <Route path="/manager/order" element={<OrdersManager />} />
-          <Route path="/manager/cases" element={<CaseManage />} />
-          <Route path="/Home/HealUpLanding" element={<HealUpLanding />} />
-          <Route path="/Manager/Dashb" element={<ManagersDashboard />} />
-          <Route path="/Manager/bread" element={<BreadManager />} />
-          <Route path="/Client/bread" element={<Healthbread />} />
-          <Route path="/order/bread" element={< BreadOrdersManager/>} />
-          <Route path="/wellness" element={< WellnessPage/>} />
-          <Route path="/Learn" element={< Learn/>} />
-          <Route path="/contact" element={< Contact/>} />
-
-          {/* AUTHENTICATION */}
-
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/verify" element={<VerifyOtp />} />
-          <Route path="/manageusers" element={<UserManagement />} />
-          <Route path="/login" element={<Login />} />
+          {/* Home is now set as the direct landing page */}
+          <Route path="/" element={<Home />} />
           
+          {/* Manager Dashboard and Sub-Routes */}
+          <Route path="/ManagerDashboard" element={<ManagerDashboard />} />
+          <Route path="/CatList" element={<CategoryList />} />
+          <Route path="/MainPhotoList" element={<MainPhotoList />} />
+          <Route path="/ProdList" element={<ProductList />} />
+          <Route path="/CatCreate" element={<CategoryCreate />} />
+          <Route path="/MainphotoCrea" element={<MainPhotoCreate />} />
+          <Route path="/ProductCreate" element={<ProductCreate />} />
+          <Route path="/HealMart" element={<HealMate />} />
+          <Route path="/HealUpCafe" element={<HealUpCafePage />} />
         </Routes>
-      </div></Layout>
+      </div>
     </Router>
   );
 }
