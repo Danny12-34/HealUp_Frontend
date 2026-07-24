@@ -11,6 +11,9 @@ import ManagerDashboard from './components/Dashboards/Manager/ManagerDashboard';
 import Home from './components/HomePage';
 import HealMate from './components/HealMat';
 import HealUpCafePage from './components/HealUpCafePage';
+import AboutUsPage from './components/AboutUs';
+import HealthyLivingPage from './components/HealthyLivingPage';
+import ContactPage from './components/ContactPage';
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -32,6 +35,10 @@ function App() {
           <Route path="/ProductCreate" element={<ProductCreate />} />
           <Route path="/HealMart" element={<HealMate />} />
           <Route path="/HealUpCafe" element={<HealUpCafePage />} />
+          <Route path="/Aboutus" element={<AboutUsPage />} />
+          <Route path="/HealthLiving" element={<HealthyLivingPage />} />
+          <Route path="/ContactUs" element={<ContactPage />} />
+          
         </Routes>
       </div>
     </Router>

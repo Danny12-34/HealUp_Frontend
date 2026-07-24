@@ -1,6 +1,14 @@
 import React from 'react';
 
-export default function Header() {
+export default function Header({ currentPath = '/' }) {
+  // Determine active states for each route
+  const isHome = currentPath === '/';
+  const isHealthyLiving = currentPath === '/HealthLiving';
+  const isHealMart = currentPath === '/HealMart';
+  const isHealUpCafe = currentPath === '/HealUpCafe';
+  const isAboutUs = currentPath === '/Aboutus';
+  const isContact = currentPath === '/Contact';
+
   return (
     <>
       {/* Internal Stylesheet */}
@@ -73,12 +81,14 @@ export default function Header() {
           color: #1b4332;
           font-weight: 800;
           letter-spacing: -0.5px;
+          margin: 0;
         }
 
         .logo-text p {
           font-size: 10px;
           color: #6b7280;
           font-weight: 500;
+          margin: 0;
         }
 
         .nav-links {
@@ -92,19 +102,19 @@ export default function Header() {
         .nav-links a {
           text-decoration: none;
           color: #4b5563;
+          padding-bottom: 4px;
+          transition: all 0.2s ease;
         }
 
-        .nav-links a.active, .nav-links a:hover {
+        /* Active Green Highlighting Rule */
+        .nav-links a.active {
           color: #1b4332;
-          font-weight: 600;
+          font-weight: 700;
+          border-bottom: 2px solid #2d6a4f;
         }
 
-        .dropdown {
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          cursor: pointer;
-          color: #4b5563;
+        .nav-links a:hover {
+          color: #1b4332;
         }
 
         .header-actions {
@@ -118,7 +128,6 @@ export default function Header() {
           border: none;
           border-radius: 9999px;
           padding: 8px 16px;
-          padding-right: 36px;
           font-size: 14px;
           outline: none;
           width: 240px;
@@ -173,12 +182,12 @@ export default function Header() {
           </div>
 
           <nav className="nav-links">
-            <a href="/" className="active">Home</a>
-            <a href="#">Healthy Living</a>
-            <a href="/HealMart">HealMart</a>
-            <a href="/HealUpCafe">HealUp Café</a>
-            <a href="#">About Us</a>
-            <a href="#">Contact</a>
+            <a href="/" className={isHome ? 'active' : ''}>Home</a>
+            <a href="/HealthLiving" className={isHealthyLiving ? 'active' : ''}>Healthy Living</a>
+            <a href="/HealMart" className={isHealMart ? 'active' : ''}>HealMart</a>
+            <a href="/HealUpCafe" className={isHealUpCafe ? 'active' : ''}>HealUp Café</a>
+            <a href="/Aboutus" className={isAboutUs ? 'active' : ''}>About Us</a>
+            <a href="/ContactUs" className={isContact ? 'active' : ''}>Contact</a>
           </nav>
 
           <div className="header-actions">
