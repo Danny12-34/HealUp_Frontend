@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API = 'http://localhost:5000/api/categories';
+const API = 'http://localhost:5000/api/products';
 
 // ==========================================
 // 1. CATEGORY LIST COMPONENT
@@ -130,7 +130,13 @@ export function CategoryList({ onEdit, onAddNew }) {
       fontWeight: '600',
       backgroundColor: status?.toLowerCase() === 'active' ? '#def7ec' : '#fde8e8',
       color: status?.toLowerCase() === 'active' ? '#03543f' : '#9b1c1c',
+      marginBottom: '6px',
     }),
+    metaText: {
+      fontSize: '13px',
+      color: '#4a5568',
+      marginBottom: '4px',
+    },
     actionContainer: {
       display: 'flex',
       gap: '10px',
@@ -173,32 +179,32 @@ export function CategoryList({ onEdit, onAddNew }) {
   return (
     <div style={styles.container}>
       <div style={styles.headerWrapper}>
-        <h2 style={styles.header}>📂 Category Directory</h2>
-        <button 
-          onClick={onAddNew} 
+        <h2 style={styles.header}>📂 Product Directory</h2>
+        <button
+          onClick={onAddNew}
           style={styles.addBtn(addHover)}
           onMouseEnter={() => setAddHover(true)}
           onMouseLeave={() => setAddHover(false)}
         >
-          ➕ Add New Category
+          ➕ Add New Product
         </button>
       </div>
-      
+
       <div style={styles.grid}>
         {categories.length > 0 ? (
           categories.map((c) => {
             const photoUrl = c.image;
 
             return (
-              <div key={c.category_id} style={styles.card}>
+              <div key={c.product_id} style={styles.card}>
                 <div>
                   <div style={styles.imageContainer}>
                     {photoUrl ? (
                       <>
-                        <img 
-                          src={photoUrl} 
-                          alt={c.cat_name} 
-                          style={styles.image} 
+                        <img
+                          src={photoUrl}
+                          alt={c.product_name}
+                          style={styles.image}
                           onError={(e) => { e.target.style.display = 'none'; }}
                         />
                         <div style={styles.photoBadgeOverlay}>Photo</div>
@@ -209,26 +215,31 @@ export function CategoryList({ onEdit, onAddNew }) {
                   </div>
 
                   <div style={styles.cardBody}>
-                    <div style={styles.cardTitle}>{c.cat_name}</div>
+                    <div style={styles.cardTitle}>{c.product_name}</div>
                     <div>
                       <span style={styles.badge(c.status)}>{c.status || 'N/A'}</span>
                     </div>
+                    <div style={styles.metaText}><strong>Quantity:</strong> {c.quantity || 'N/A'}</div>
+                    <div style={styles.metaText}><strong>Price:</strong> {c.price ? `$${c.price}` : 'N/A'}</div>
+                    <div style={styles.metaText}><strong>Area:</strong> {c.helping_area || 'N/A'}</div>
+                    <div style={styles.metaText}><strong>Exp Date:</strong> {c.exp_date ? new Date(c.exp_date).toLocaleDateString() : 'N/A'}</div>
+                    <div style={styles.metaText}><strong>Is Popular:</strong> {c.is_popular || 'No'}</div>
                   </div>
                 </div>
 
                 <div style={styles.actionContainer}>
-                  <button 
-                    onClick={() => onEdit(c)} 
-                    style={styles.editBtn(editHover === c.category_id)}
-                    onMouseEnter={() => setEditHover(c.category_id)}
+                  <button
+                    onClick={() => onEdit(c)}
+                    style={styles.editBtn(editHover === c.product_id)}
+                    onMouseEnter={() => setEditHover(c.product_id)}
                     onMouseLeave={() => setEditHover(null)}
                   >
                     Edit
                   </button>
-                  <button 
-                    onClick={() => handleDelete(c.category_id)} 
-                    style={styles.deleteBtn(deleteHover === c.category_id)}
-                    onMouseEnter={() => setDeleteHover(c.category_id)}
+                  <button
+                    onClick={() => handleDelete(c.product_id)}
+                    style={styles.deleteBtn(deleteHover === c.product_id)}
+                    onMouseEnter={() => setDeleteHover(c.product_id)}
                     onMouseLeave={() => setDeleteHover(null)}
                   >
                     Delete
@@ -245,20 +256,29 @@ export function CategoryList({ onEdit, onAddNew }) {
   );
 }
 
-
 // ==========================================
 // 2. CATEGORY FORM COMPONENT (Add / Edit)
 // ==========================================
 export function CategoryForm({ categoryData, isEditMode, onCancel, onSuccess }) {
   const [catName, setCatName] = useState('');
   const [status, setStatus] = useState('Active');
+  const [quantity, setQuantity] = useState('');
+  const [price, setPrice] = useState('');
+  const [helpingArea, setHelpingArea] = useState('');
+  const [expDate, setExpDate] = useState('');
+  const [isPopular, setIsPopular] = useState('No');
   const [imageFile, setImageFile] = useState(null);
   const [preview, setPreview] = useState('');
 
   useEffect(() => {
     if (isEditMode && categoryData) {
-      setCatName(categoryData.cat_name || '');
+      setCatName(categoryData.product_name || '');
       setStatus(categoryData.status || 'Active');
+      setQuantity(categoryData.quantity || '');
+      setPrice(categoryData.price || '');
+      setHelpingArea(categoryData.helping_area || '');
+      setExpDate(categoryData.exp_date ? categoryData.exp_date.split('T')[0] : '');
+      setIsPopular(categoryData.is_popular || 'No');
       setPreview(categoryData.image || '');
     }
   }, [isEditMode, categoryData]);
@@ -275,10 +295,16 @@ export function CategoryForm({ categoryData, isEditMode, onCancel, onSuccess }) 
     e.preventDefault();
     try {
       const formData = new FormData();
-      formData.append('cat_name', catName);
+      formData.append('product_name', catName);
       formData.append('status', status);
+      formData.append('quantity', quantity);
+      formData.append('price', price);
+      formData.append('helping_area', helpingArea);
+      formData.append('exp_date', expDate);
+      formData.append('is_popular', isPopular);
+      
       if (imageFile) {
-        formData.append('image', imageFile); // matches upload.single('image') on backend
+        formData.append('image', imageFile);
       }
 
       const config = {
@@ -288,7 +314,7 @@ export function CategoryForm({ categoryData, isEditMode, onCancel, onSuccess }) 
       };
 
       if (isEditMode) {
-        await axios.put(`${API}/${categoryData.category_id}`, formData, config);
+        await axios.put(`${API}/${categoryData.product_id}`, formData, config);
       } else {
         await axios.post(API, formData, config);
       }
@@ -404,16 +430,16 @@ export function CategoryForm({ categoryData, isEditMode, onCancel, onSuccess }) 
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.header}>{isEditMode ? '✏️ Edit Category' : '➕ Add New Category'}</h2>
-      
+      <h2 style={styles.header}>{isEditMode ? '✏️ Edit Category' : '➕ Add New Product'}</h2>
+
       <form onSubmit={handleSubmit}>
         <div style={styles.formGroup}>
           <label style={styles.label}>Category Name:</label>
-          <input 
-            type="text" 
-            value={catName} 
-            onChange={(e) => setCatName(e.target.value)} 
-            required 
+          <input
+            type="text"
+            value={catName}
+            onChange={(e) => setCatName(e.target.value)}
+            required
             style={styles.input}
             placeholder="Enter category name"
           />
@@ -421,8 +447,8 @@ export function CategoryForm({ categoryData, isEditMode, onCancel, onSuccess }) 
 
         <div style={styles.formGroup}>
           <label style={styles.label}>Status:</label>
-          <select 
-            value={status} 
+          <select
+            value={status}
             onChange={(e) => setStatus(e.target.value)}
             style={styles.select}
           >
@@ -432,11 +458,67 @@ export function CategoryForm({ categoryData, isEditMode, onCancel, onSuccess }) 
         </div>
 
         <div style={styles.formGroup}>
+          <label style={styles.label}>Quantity:</label>
+          <input
+            type="text"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            style={styles.input}
+            placeholder="Enter quantity"
+          />
+        </div>
+
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Price:</label>
+          <input
+            type="number"
+            step="0.01"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            style={styles.input}
+            placeholder="Enter price"
+          />
+        </div>
+
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Helping Area:</label>
+          <input
+            type="text"
+            value={helpingArea}
+            onChange={(e) => setHelpingArea(e.target.value)}
+            style={styles.input}
+            placeholder="Enter helping area"
+          />
+        </div>
+
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Expiration Date:</label>
+          <input
+            type="date"
+            value={expDate}
+            onChange={(e) => setExpDate(e.target.value)}
+            style={styles.input}
+          />
+        </div>
+
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Is Popular?</label>
+          <select
+            value={isPopular}
+            onChange={(e) => setIsPopular(e.target.value)}
+            style={styles.select}
+          >
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </div>
+
+        <div style={styles.formGroup}>
           <label style={styles.label}>Upload Image:</label>
-          <input 
-            type="file" 
+          <input
+            type="file"
             accept="image/*"
-            onChange={handleFileChange} 
+            onChange={handleFileChange}
             style={styles.fileInput}
           />
           {preview && (
@@ -458,7 +540,6 @@ export function CategoryForm({ categoryData, isEditMode, onCancel, onSuccess }) 
     </div>
   );
 }
-
 
 // ==========================================
 // 3. MAIN MANAGER COMPONENT (Router / Controller)
@@ -485,16 +566,16 @@ export default function CategoryManager() {
   return (
     <div style={{ backgroundColor: '#f7fafc', minHeight: '100vh', padding: '20px' }}>
       {currentView === 'LIST' && (
-        <CategoryList 
-          onAddNew={handleAddNew} 
-          onEdit={handleEdit} 
+        <CategoryList
+          onAddNew={handleAddNew}
+          onEdit={handleEdit}
         />
       )}
 
       {(currentView === 'ADD' || currentView === 'EDIT') && (
-        <CategoryForm 
-          categoryData={selectedCategory} 
-          isEditMode={currentView === 'EDIT'} 
+        <CategoryForm
+          categoryData={selectedCategory}
+          isEditMode={currentView === 'EDIT'}
           onCancel={handleBackToList}
           onSuccess={handleBackToList}
         />

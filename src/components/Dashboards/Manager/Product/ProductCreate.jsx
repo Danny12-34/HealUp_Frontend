@@ -2,248 +2,241 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const API = 'http://localhost:5000/api/products';
+const CATEGORY_API = 'http://localhost:5000/api/categories';
 
-export default function ProductCreate({ editingProduct, onClearEdit }) {
-  const [form, setForm] = useState({
-    product_name: '', quantity: '', price: '', helping_area: '', exp_date: '', status: '', image: null
+export default function ProductList() {
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  
+  // Product Form State with is_popular included
+  const [productForm, setProductForm] = useState({
+    product_name: '',
+    quantity: '',
+    price: '',
+    helping_area: '',
+    exp_date: '',
+    status: 'Available',
+    is_popular: 'No',
+    image: null,
   });
-  const [isHovered, setIsHovered] = useState(false);
-  const [isCancelHovered, setIsCancelHovered] = useState(false);
 
   useEffect(() => {
-    if (editingProduct) {
-      setForm({
-        ...editingProduct,
-        exp_date: editingProduct.exp_date ? editingProduct.exp_date.split('T')[0] : '',
-        image: null
-      });
+    fetchProducts();
+    fetchCategories();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const res = await axios.get(API);
+      setProducts(res.data);
+    } catch (err) {
+      console.error("Error fetching products:", err);
     }
-  }, [editingProduct]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const fd = new FormData();
-    Object.keys(form).forEach(key => { if (form[key] !== null) fd.append(key, form[key]); });
-
-    if (editingProduct) {
-      await axios.put(`${API}/${editingProduct.product_id}`, fd);
-      onClearEdit();
-    } else {
-      await axios.post(API, fd);
-    }
-
-    setForm({ product_name: '', quantity: '', price: '', helping_area: '', exp_date: '', status: '', image: null });
-    window.location.reload(); 
   };
 
-  // --- Internal Styles ---
-  const styles = {
-    container: {
-      maxWidth: '750px',
-      margin: '40px auto',
-      padding: '30px',
-      backgroundColor: '#ffffff',
-      borderRadius: '12px',
-      boxShadow: '0 10px 25px rgba(0, 0, 0, 0.08)',
-      fontFamily: "'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
-      border: '1px solid #eaeaea',
-    },
-    header: {
-      marginBottom: '24px',
-      fontSize: '22px',
-      fontWeight: '600',
-      color: '#1a202c',
-      borderBottom: '2px solid #f0f4f8',
-      paddingBottom: '12px',
-    },
-    grid: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: '20px',
-    },
-    fullWidth: {
-      gridColumn: 'span 2',
-    },
-    label: {
-      display: 'block',
-      marginBottom: '8px',
-      fontSize: '14px',
-      fontWeight: '500',
-      color: '#4a5568',
-    },
-    input: {
-      width: '100%',
-      padding: '12px 14px',
-      fontSize: '15px',
-      border: '1px solid #cbd5e0',
-      borderRadius: '8px',
-      outline: 'none',
-      transition: 'border-color 0.2s, box-shadow 0.2s',
-      boxSizing: 'border-box',
-      backgroundColor: '#fdfdfe',
-    },
-    fileInput: {
-      width: '100%',
-      padding: '10px',
-      fontSize: '14px',
-      border: '1px dashed #cbd5e0',
-      borderRadius: '8px',
-      backgroundColor: '#f7fafc',
-      cursor: 'pointer',
-    },
-    buttonContainer: {
-      display: 'flex',
-      gap: '12px',
-      marginTop: '10px',
-    },
-    submitBtn: {
-      backgroundColor: editingProduct ? '#d69e2e' : '#3182ce',
-      color: '#ffffff',
-      padding: '12px 24px',
-      fontSize: '15px',
-      fontWeight: '600',
-      border: 'none',
-      borderRadius: '8px',
-      cursor: 'pointer',
-      transition: 'background-color 0.2s, transform 0.1s',
-      boxShadow: '0 4px 12px rgba(49, 130, 206, 0.2)',
-    },
-    cancelBtn: {
-      backgroundColor: '#e2e8f0',
-      color: '#4a5568',
-      padding: '12px 20px',
-      fontSize: '15px',
-      fontWeight: '600',
-      border: 'none',
-      borderRadius: '8px',
-      cursor: 'pointer',
-      transition: 'background-color 0.2s',
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get(CATEGORY_API);
+      setCategories(res.data);
+    } catch (err) {
+      console.error("Error fetching categories:", err);
+    }
+  };
+
+  // Handle Product Submission
+  const handleProductSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const formData = new FormData();
+      formData.append('product_name', productForm.product_name);
+      formData.append('quantity', productForm.quantity);
+      formData.append('price', productForm.price);
+      formData.append('helping_area', productForm.helping_area);
+      formData.append('exp_date', productForm.exp_date);
+      formData.append('status', productForm.status);
+      formData.append('is_popular', productForm.is_popular);
+      
+      if (productForm.image) {
+        formData.append('image', productForm.image);
+      }
+
+      await axios.post(API, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+
+      // Reset form and reload products list
+      setProductForm({
+        product_name: '',
+        quantity: '',
+        price: '',
+        helping_area: '',
+        exp_date: '',
+        status: 'Available',
+        is_popular: 'No',
+        image: null,
+      });
+      fetchProducts();
+    } catch (err) {
+      console.error("Error saving product:", err);
+      alert("Failed to save product. Check console for details.");
     }
   };
 
   return (
     <div style={styles.container}>
-      <form onSubmit={handleSubmit}>
-        <h3 style={styles.header}>
-          {editingProduct ? '✏️ Update Product Details' : '📦 Create New Product'}
-        </h3>
-        
-        <div style={styles.grid}>
-          {/* Product Name */}
-          <div>
-            <label style={styles.label}>Product Name</label>
-            <input 
-              placeholder="e.g., Organic Honey" 
-              value={form.product_name} 
-              onChange={e => setForm({...form, product_name: e.target.value})} 
-              style={styles.input} 
-              required 
-            />
-          </div>
+      <h2>📦 Product Management Dashboard</h2>
 
-          {/* Quantity */}
-          <div>
-            <label style={styles.label}>Quantity</label>
-            <input 
-              type="number" 
-              placeholder="e.g., 50" 
-              value={form.quantity} 
-              onChange={e => setForm({...form, quantity: e.target.value})} 
-              style={styles.input} 
-              required 
-            />
-          </div>
+      {/* Product Registration Form */}
+      <div style={styles.card}>
+        <h3>Register New Product</h3>
+        <form onSubmit={handleProductSubmit} style={styles.formGrid}>
+          <input
+            type="text"
+            placeholder="Product Name"
+            value={productForm.product_name}
+            onChange={(e) => setProductForm({ ...productForm, product_name: e.target.value })}
+            style={styles.input}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Quantity (e.g. 50 or 20kg)"
+            value={productForm.quantity}
+            onChange={(e) => setProductForm({ ...productForm, quantity: e.target.value })}
+            style={styles.input}
+            required
+          />
+          <input
+            type="number"
+            step="0.01"
+            placeholder="Price ($)"
+            value={productForm.price}
+            onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
+            style={styles.input}
+            required
+          />
+          <input
+            type="text"
+            placeholder="Helping Area"
+            value={productForm.helping_area}
+            onChange={(e) => setProductForm({ ...productForm, helping_area: e.target.value })}
+            style={styles.input}
+          />
+          <input
+            type="date"
+            value={productForm.exp_date}
+            onChange={(e) => setProductForm({ ...productForm, exp_date: e.target.value })}
+            style={styles.input}
+          />
+          <input
+            type="text"
+            placeholder="Status"
+            value={productForm.status}
+            onChange={(e) => setProductForm({ ...productForm, status: e.target.value })}
+            style={styles.input}
+            required
+          />
 
-          {/* Price */}
-          <div>
-            <label style={styles.label}>Price ($)</label>
-            <input 
-              type="number" 
-              step="0.01" 
-              placeholder="e.g., 19.99" 
-              value={form.price} 
-              onChange={e => setForm({...form, price: e.target.value})} 
-              style={styles.input} 
-              required 
-            />
-          </div>
-
-          {/* Helping Area */}
-          <div>
-            <label style={styles.label}>Helping Area</label>
-            <input 
-              placeholder="e.g., Downtown" 
-              value={form.helping_area} 
-              onChange={e => setForm({...form, helping_area: e.target.value})} 
-              style={styles.input} 
-            />
-          </div>
-
-          {/* Expiration Date */}
-          <div>
-            <label style={styles.label}>Expiration Date</label>
-            <input 
-              type="date" 
-              value={form.exp_date} 
-              onChange={e => setForm({...form, exp_date: e.target.value})} 
-              style={styles.input} 
-            />
-          </div>
-
-          {/* Status */}
-          <div>
-            <label style={styles.label}>Status</label>
-            <input 
-              placeholder="e.g., Available" 
-              value={form.status} 
-              onChange={e => setForm({...form, status: e.target.value})} 
-              style={styles.input} 
-              required 
-            />
-          </div>
-
-          {/* Image File Input */}
-          <div style={styles.fullWidth}>
-            <label style={styles.label}>Product Image</label>
-            <input 
-              type="file" 
-              onChange={e => setForm({...form, image: e.target.files[0]})} 
-              style={styles.fileInput} 
-            />
-          </div>
-
-          {/* Action Buttons */}
-          <div style={{ ...styles.fullWidth, ...styles.buttonContainer }}>
-            <button 
-              type="submit" 
-              style={{
-                ...styles.submitBtn,
-                backgroundColor: editingProduct ? '#b7791f' : '#2b6cb0',
-                transform: isHovered ? 'translateY(-1px)' : 'none'
-              }}
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
+          {/* Is Popular Dropdown */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+            <label style={{ fontSize: '12px', fontWeight: 'bold', color: '#4a5568' }}>Is Popular?</label>
+            <select
+              value={productForm.is_popular}
+              onChange={(e) => setProductForm({ ...productForm, is_popular: e.target.value })}
+              style={styles.input}
             >
-              {editingProduct ? 'Save Changes' : 'Publish Product'}
-            </button>
-
-            {editingProduct && (
-              <button 
-                type="button" 
-                onClick={onClearEdit} 
-                style={{
-                  ...styles.cancelBtn,
-                  backgroundColor: isCancelHovered ? '#cbd5e0' : '#e2e8f0'
-                }}
-                onMouseEnter={() => setIsCancelHovered(true)}
-                onMouseLeave={() => setIsCancelHovered(false)}
-              >
-                Cancel
-              </button>
-            )}
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
           </div>
-        </div>
-      </form>
+
+          <input
+            type="file"
+            onChange={(e) => setProductForm({ ...productForm, image: e.target.files[0] })}
+            style={{ ...styles.input, gridColumn: 'span 2' }}
+          />
+          
+          <button type="submit" style={styles.btn}>Save Product</button>
+        </form>
+      </div>
+
+      {/* Category Manager Component Section */}
+      <CategoryManager categories={categories} />
     </div>
   );
 }
+
+// Sub-component: Category Manager
+function CategoryManager({ categories }) {
+  const [categoryName, setCategoryName] = useState('');
+
+  const handleCategorySubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(CATEGORY_API, { name: categoryName });
+      setCategoryName('');
+      window.location.reload();
+    } catch (err) {
+      console.error("Error saving category", err);
+    }
+  };
+
+  return (
+    <div style={{ ...styles.card, marginTop: '30px' }}>
+      <h3>Category Management</h3>
+      <CategoryForm 
+        categoryName={categoryName} 
+        setCategoryName={setCategoryName} 
+        onSubmit={handleCategorySubmit} 
+      />
+      <CategoryList categories={categories} />
+    </div>
+  );
+}
+
+// Sub-component: Category Form
+function CategoryForm({ categoryName, setCategoryName, onSubmit }) {
+  return (
+    <form onSubmit={onSubmit} style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
+      <input
+        type="text"
+        placeholder="New Category Name"
+        value={categoryName}
+        onChange={(e) => setCategoryName(e.target.value)}
+        style={styles.input}
+        required
+      />
+      <button type="submit" style={styles.btn}>Add Category</button>
+    </form>
+  );
+}
+
+// Sub-component: Category List
+function CategoryList({ categories }) {
+  return (
+    <div>
+      <h4>Existing Categories</h4>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        {categories && categories.length > 0 ? (
+          categories.map((cat) => (
+            <div key={cat.category_id || cat.id || cat.name} style={styles.listItem}>
+              <span>{cat.name || cat.category_name}</span>
+            </div>
+          ))
+        ) : (
+          <p style={{ color: '#718096' }}>No categories found.</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+// Basic Styles
+const styles = {
+  container: { maxWidth: '800px', margin: '30px auto', fontFamily: 'Segoe UI, sans-serif' },
+  card: { background: '#fff', padding: '20px', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.05)' },
+  formGrid: { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '15px' },
+  input: { padding: '10px', borderRadius: '6px', border: '1px solid #cbd5e0', width: '100%', boxSizing: 'border-box' },
+  btn: { background: '#3182ce', color: '#fff', border: 'none', padding: '10px 20px', borderRadius: '6px', cursor: 'pointer', fontWeight: 'bold', gridColumn: 'span 2' },
+  listItem: { padding: '10px', background: '#f7fafc', borderRadius: '6px', border: '1px solid #e2e8f0' }
+};

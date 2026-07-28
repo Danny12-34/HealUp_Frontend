@@ -183,9 +183,9 @@ export default function Header({ currentPath = '/' }) {
 
           <nav className="nav-links">
             <a href="/" className={isHome ? 'active' : ''}>Home</a>
-            <a href="/HealthLiving" className={isHealthyLiving ? 'active' : ''}>Healthy Living</a>
-            <a href="/HealMart" className={isHealMart ? 'active' : ''}>HealMart</a>
+            <a href="/HealMart" className={isHealMart ? 'active' : ''}>HealMart</a>                       
             <a href="/HealUpCafe" className={isHealUpCafe ? 'active' : ''}>HealUp Café</a>
+            <a href="/HealthLiving" className={isHealthyLiving ? 'active' : ''}>Healthy Living</a> 
             <a href="/Aboutus" className={isAboutUs ? 'active' : ''}>About Us</a>
             <a href="/ContactUs" className={isContact ? 'active' : ''}>Contact</a>
           </nav>

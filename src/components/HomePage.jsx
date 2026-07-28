@@ -1,7 +1,60 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './Header'; // Adjust the relative path if needed
+import { Link } from 'react-router-dom';
 
 export default function HomePage() {
+  const [featuredProducts, setFeaturedProducts] = useState([]);
+  const [popularDrinks, setPopularDrinks] = useState([]);
+  const [inspirationArticles, setInspirationArticles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Toggle states for "View All" functionality
+  const [showAllFeatured, setShowAllFeatured] = useState(false);
+  const [showAllDrinks, setShowAllDrinks] = useState(false);
+  const [showAllArticles, setShowAllArticles] = useState(false);
+
+  // Fetch live data from backend endpoint on mount
+  useEffect(() => {
+    const fetchHomeData = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch('http://localhost:5000/api/products');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        
+        // Handle array or object response structure and filter popular drinks where is_popular == 'yes'
+        if (Array.isArray(data)) {
+          setFeaturedProducts(data);
+          const popular = data.filter(
+            (item) => String(item.is_popular).trim().toLowerCase() === 'yes' || item.is_popular === true
+          );
+          setPopularDrinks(popular);
+        } else {
+          const prods = data.products || [];
+          if (prods) setFeaturedProducts(prods);
+
+          const drinksSource = data.drinks || prods;
+          const popular = drinksSource.filter(
+            (item) => String(item.is_popular).trim().toLowerCase() === 'yes' || item.is_popular === true
+          );
+          setPopularDrinks(popular);
+
+          if (data.articles) setInspirationArticles(data.articles);
+        }
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError("Failed to load live data. Please check your backend connection.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHomeData();
+  }, []);
+
   return (
     <div className="healup-container">
       {/* Internal CSS Styles for Page Content */}
@@ -279,23 +332,48 @@ export default function HomePage() {
           color: #1b4332;
         }
 
-        .section-header a {
+        .section-header button.view-all-btn {
+          background: none;
+          border: none;
           font-size: 12px;
           font-weight: 600;
           color: #52b788;
+          cursor: pointer;
           text-decoration: none;
           transition: color 0.2s;
         }
 
-        .section-header a:hover {
+        .section-header button.view-all-btn:hover {
           color: #1b4332;
           text-decoration: underline;
+        }
+
+        .empty-state {
+          grid-column: 1 / -1;
+          text-align: center;
+          padding: 24px;
+          color: #6b7280;
+          font-size: 13px;
+          background: #ffffff;
+          border-radius: 12px;
+          border: 1px dashed #e5e7eb;
+        }
+
+        .error-state {
+          grid-column: 1 / -1;
+          text-align: center;
+          padding: 24px;
+          color: #dc2626;
+          font-size: 13px;
+          background: #fef2f2;
+          border-radius: 12px;
+          border: 1px dashed #fecaca;
         }
 
         /* Products Grid */
         .products-grid {
           display: grid;
-          grid-template-columns: repeat(6, 1fr);
+          grid-template-columns: repeat(5, 1fr);
           gap: 16px;
         }
 
@@ -615,7 +693,7 @@ export default function HomePage() {
         }
       `}</style>
 
-      {/* Render the Imported Header Component */}
+      {/* Header Component */}
       <Header />
 
       {/* Hero Section */}
@@ -630,7 +708,9 @@ export default function HomePage() {
               Shop nutritious foods at HealMart and enjoy freshly prepared juices, smoothies, and herbal tisanes from HealUp Café – all in one place.
             </p>
             <div className="hero-buttons">
-              <button className="btn-primary">🌿 Shop HealMart</button>
+              <Link to="/HealMart" style={{ textDecoration: 'none' }}>
+                <button className="btn-primary">🌿 Shop HealMart</button>
+              </Link>
               <button className="btn-secondary">Order a Healthy Drink</button>
             </div>
           </div>
@@ -711,29 +791,34 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Products */}
+      {/* Featured Products - Dynamic Endpoint Data */}
       <section className="section-container">
         <div className="section-header">
           <h3>Featured Products</h3>
-          <a href="#">View All →</a>
+          <button 
+            className="view-all-btn" 
+            onClick={() => setShowAllFeatured(!showAllFeatured)}
+          >
+            {showAllFeatured ? 'Show Less ↑' : 'View All →'}
+          </button>
         </div>
         <div className="products-grid">
-          {[
-            { name: "Pure Honey (500g)", rating: "⭐ 4.8 (120)", price: "FRw 6,000" },
-            { name: "Brown Rice (1kg)", rating: "⭐ 4.7 (85)", price: "FRw 2,500" },
-            { name: "Whole Wheat Flour (1kg)", rating: "⭐ 4.6 (74)", price: "FRw 2,000" },
-            { name: "Flaxseed (250g)", rating: "⭐ 4.7 (64)", price: "FRw 1,500" },
-            { name: "Herbal Tea (Moringa)", rating: "⭐ 4.8 (92)", price: "FRw 3,000" },
-            { name: "Olive Oil (500ml)", rating: "⭐ 4.9 (110)", price: "FRw 7,500" },
-          ].map((item, index) => (
-            <div key={index} className="product-card">
+          {loading && <div className="empty-state">Loading products from http://localhost:5000/api/products...</div>}
+          {error && <div className="error-state">{error}</div>}
+          {!loading && !error && featuredProducts.length === 0 && (
+            <div className="empty-state">No products found.</div>
+          )}
+          {!loading && !error && (showAllFeatured ? featuredProducts : featuredProducts.slice(0, 5)).map((item, index) => (
+            <div key={item.id || index} className="product-card">
               <div>
-                <div className="product-img">[Image]</div>
-                <h5>{item.name}</h5>
-                <div className="product-rating">{item.rating}</div>
+                <div className="product-img">
+                  {item.image ? <img src={item.image} alt={item.product_name || item.name} style={{width:'100%', height:'100%', objectFit:'cover', borderRadius:'10px'}} /> : '[Image]'}
+                </div>
+                <h5>{item.product_name || item.name}</h5>
+                <div className="product-rating">⭐ {item.rating || '4.5'}</div>
               </div>
               <div className="product-footer">
-                <span className="product-price">{item.price}</span>
+                <span className="product-price">Rfw {item.price}</span>
                 <button className="add-btn">+</button>
               </div>
             </div>
@@ -741,28 +826,33 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Popular Drinks */}
+      {/* Popular Drinks (Filtered where is_popular == yes) */}
       <section className="section-container">
         <div className="section-header">
           <h3>Popular Drinks</h3>
-          <a href="#">View All →</a>
+          <button 
+            className="view-all-btn" 
+            onClick={() => setShowAllDrinks(!showAllDrinks)}
+          >
+            {showAllDrinks ? 'Show Less ↑' : 'View All →'}
+          </button>
         </div>
         <div className="drinks-grid">
-          {[
-            { name: "Green Detox Juice", desc: "Cleansing & Refreshing", price: "FRw 3,500" },
-            { name: "Tropical Smoothie", desc: "Pineapple, Mango & Banana", price: "FRw 4,000" },
-            { name: "Beetroot Juice", desc: "Detox & Energizing", price: "FRw 3,500" },
-            { name: "Ginger Lemon Tisane", desc: "Soothing & Immunity Boosting", price: "FRw 2,500" },
-            { name: "Hibiscus Tea", desc: "Refreshing & Antioxidant Rich", price: "FRw 2,500" },
-          ].map((drink, index) => (
-            <div key={index} className="drink-card">
+          {loading && <div className="empty-state">Loading drinks...</div>}
+          {!loading && popularDrinks.length === 0 && (
+            <div className="empty-state">No popular drinks found where is_popular is yes.</div>
+          )}
+          {(showAllDrinks ? popularDrinks : popularDrinks.slice(0, 5)).map((drink, index) => (
+            <div key={drink.id || index} className="drink-card">
               <div>
-                <div className="drink-img">[Drink Image]</div>
-                <h5>{drink.name}</h5>
-                <p>{drink.desc}</p>
+                <div className="drink-img">
+                  {drink.image ? <img src={drink.image} alt={drink.name || drink.product_name} style={{width:'100%', height:'100%', objectFit:'cover', borderRadius:'10px'}} /> : '[Drink Image]'}
+                </div>
+                <h5>{drink.name || drink.product_name}</h5>
+                <p>{drink.desc || drink.description || 'Freshly prepared healthy drink'}</p>
               </div>
               <div className="drink-footer">
-                <span className="product-price">{drink.price}</span>
+                <span className="product-price">Rfw {drink.price}</span>
                 <button className="order-btn">Order Now</button>
               </div>
             </div>
@@ -774,19 +864,25 @@ export default function HomePage() {
       <section className="section-container">
         <div className="section-header">
           <h3>Healthy Living Inspiration</h3>
-          <a href="#">View All Articles →</a>
+          <button 
+            className="view-all-btn" 
+            onClick={() => setShowAllArticles(!showAllArticles)}
+          >
+            {showAllArticles ? 'Show Less ↑' : 'View All Articles →'}
+          </button>
         </div>
         <div className="inspiration-grid">
-          {[
-            { title: "Healthy Breakfast Ideas to Start Your Day Right", cat: "Nutrition" },
-            { title: "The Amazing Benefits of Whole Grains", cat: "Food" },
-            { title: "Why Herbal Tisanes Matter For Your Health", cat: "Wellness" },
-            { title: "Building Healthy Habits That Last a Lifetime", cat: "Lifestyle" },
-          ].map((article, index) => (
-            <div key={index} className="inspiration-card">
-              <div className="inspiration-img">[Article Image]</div>
+          {loading && <div className="empty-state">Loading articles...</div>}
+          {!loading && inspirationArticles.length === 0 && (
+            <div className="empty-state">No articles fetched from endpoint.</div>
+          )}
+          {(showAllArticles ? inspirationArticles : inspirationArticles.slice(0, 4)).map((article, index) => (
+            <div key={article.id || index} className="inspiration-card">
+              <div className="inspiration-img">
+                {article.image ? <img src={article.image} alt={article.title} style={{width:'100%', height:'100%', objectFit:'cover'}} /> : '[Article Image]'}
+              </div>
               <div className="inspiration-body">
-                <span className="badge">{article.cat}</span>
+                <span className="badge">{article.cat || article.category}</span>
                 <h5>{article.title}</h5>
               </div>
             </div>
