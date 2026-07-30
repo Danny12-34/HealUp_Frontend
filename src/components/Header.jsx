@@ -188,6 +188,11 @@ export default function Header({ currentPath = '/' }) {
             <a href="/HealthLiving" className={isHealthyLiving ? 'active' : ''}>Healthy Living</a> 
             <a href="/Aboutus" className={isAboutUs ? 'active' : ''}>About Us</a>
             <a href="/ContactUs" className={isContact ? 'active' : ''}>Contact</a>
+
+            <a href="/CatList" className={isHealthyLiving ? 'active' : ''}>Categories</a> 
+            <a href="/ProdList" className={isAboutUs ? 'active' : ''}>Products</a>
+            <a href="/MainPhotoList" className={isContact ? 'active' : ''}>Main Photo</a>
+
           </nav>
 
           <div className="header-actions">

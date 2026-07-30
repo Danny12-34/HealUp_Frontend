@@ -1,8 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Header from './Header';
 
-
 export default function HealMartPage() {
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState('ALL');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const PRODUCTS_API = 'http://localhost:5000/api/products';
+  const CATEGORIES_API = 'http://localhost:5000/api/categories';
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      const [prodRes, catRes] = await Promise.all([
+        axios.get(PRODUCTS_API),
+        axios.get(CATEGORIES_API).catch(() => ({ data: [] }))
+      ]);
+      setProducts(prodRes.data);
+      setCategories(catRes.data);
+      setLoading(false);
+    } catch (err) {
+      setError(err.message || 'Failed to fetch data from server');
+      setLoading(false);
+    }
+  };
+
+  const getCategoryCount = (catId) => {
+    return products.filter((p) => String(p.category_id || p.category) === String(catId)).length;
+  };
+
+  const filteredProducts = selectedCategory === 'ALL'
+    ? products
+    : products.filter((p) => String(p.category_id || p.category) === String(selectedCategory));
+
   const styles = {
     container: {
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
@@ -12,7 +49,6 @@ export default function HealMartPage() {
       padding: 0,
       boxSizing: 'border-box',
     },
-    // Navigation Bar
     navBar: {
       display: 'flex',
       justifyContent: 'space-between',
@@ -52,86 +88,64 @@ export default function HealMartPage() {
       color: '#52796f',
       margin: 0,
     },
-    navLinks: {
-      display: 'flex',
-      gap: '24px',
-      listStyle: 'none',
-      margin: 0,
-      padding: 0,
-      fontSize: '13px',
-      fontWeight: '500',
-    },
-    navItemActive: {
-      color: '#2d6a4f',
-      fontWeight: '700',
-      textDecoration: 'none',
-      borderBottom: '2px solid #2d6a4f',
-      paddingBottom: '4px',
-    },
-    navItem: {
-      color: '#4a5568',
-      textDecoration: 'none',
-    },
-    navIcons: {
-      display: 'flex',
-      gap: '20px',
-      fontSize: '14px',
-      alignItems: 'center',
-      color: '#2d3748',
-      cursor: 'pointer',
-    },
-
-    // Main Layout Layout
     mainLayout: {
       display: 'flex',
       padding: '30px 40px',
       gap: '30px',
     },
-
-    // Sidebar Category Menu
     sidebar: {
-      width: '260px',
+      width: '280px',
       flexShrink: 0,
-    },
-    categoryBox: {
       backgroundColor: '#ffffff',
       borderRadius: '12px',
       border: '1px solid #eaeaea',
       overflow: 'hidden',
-      marginBottom: '20px',
+      boxShadow: '0 4px 6px rgba(0, 0, 0, 0.02)',
+      alignSelf: 'flex-start',
     },
-    categoryHeader: {
+    sidebarHeader: {
       backgroundColor: '#1b4332',
       color: '#ffffff',
       padding: '14px 16px',
       fontWeight: 'bold',
-      fontSize: '14px',
+      fontSize: '15px',
       display: 'flex',
       alignItems: 'center',
       gap: '10px',
     },
-    categoryList: {
+    categoryListUl: {
       listStyle: 'none',
       margin: 0,
-      padding: '10px 0',
+      padding: '8px 0',
     },
-    categoryListItem: {
+    categoryItem: (isSelected) => ({
       padding: '10px 16px',
       fontSize: '13px',
-      color: '#4a5568',
+      color: isSelected ? '#1b4332' : '#4a5568',
+      backgroundColor: isSelected ? '#f0fdf4' : 'transparent',
+      fontWeight: isSelected ? '700' : '500',
       display: 'flex',
+      justifyContent: 'space-between',
       alignItems: 'center',
-      gap: '10px',
       cursor: 'pointer',
+      borderLeft: isSelected ? '4px solid #1b4332' : '4px solid transparent',
       transition: 'background 0.2s',
+    }),
+    categoryCountBadge: {
+      fontSize: '11px',
+      color: '#718096',
+      backgroundColor: '#edf2f7',
+      padding: '2px 8px',
+      borderRadius: '10px',
+      fontWeight: '600',
     },
-
     whyShopBox: {
       backgroundColor: '#ffffff',
       borderRadius: '12px',
       border: '1px solid #eaeaea',
       padding: '16px',
       marginBottom: '20px',
+      marginTop: '20px',
     },
     whyTitle: {
       fontSize: '14px',
@@ -150,20 +164,15 @@ export default function HealMartPage() {
       alignItems: 'center',
       gap: '8px',
     },
-
     subscribeBox: {
       backgroundColor: '#2d6a4f',
       color: '#ffffff',
       borderRadius: '12px',
       padding: '18px',
     },
-
-    // Content Area
     contentArea: {
       flexGrow: 1,
     },
-
-    // Hero Banner
     heroBanner: {
       background: 'linear-gradient(135deg, #f0fdf4 0%, #d8f3dc 100%)',
       borderRadius: '16px',
@@ -214,43 +223,6 @@ export default function HealMartPage() {
       cursor: 'pointer',
       fontSize: '13px',
     },
-
-    // Category Circles Row
-    circlesRow: {
-      display: 'flex',
-      gap: '15px',
-      overflowX: 'auto',
-      paddingBottom: '10px',
-      marginBottom: '30px',
-    },
-    circleItem: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      gap: '6px',
-      minWidth: '75px',
-      cursor: 'pointer',
-    },
-    circleImgBox: {
-      width: '55px',
-      height: '55px',
-      borderRadius: '50%',
-      backgroundColor: '#ffffff',
-      border: '1px solid #eaeaea',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: '22px',
-      boxShadow: '0 2px 5px rgba(0,0,0,0.05)',
-    },
-    circleText: {
-      fontSize: '11px',
-      color: '#4a5568',
-      textAlign: 'center',
-      fontWeight: '500',
-    },
-
-    // Section Header
     sectionHeader: {
       display: 'flex',
       justifyContent: 'space-between',
@@ -269,17 +241,9 @@ export default function HealMartPage() {
       fontWeight: '600',
       textDecoration: 'none',
     },
-
-    // Main layout split for Best Sellers & Special Offers
-    lowerGrid: {
-      display: 'grid',
-      gridTemplateColumns: '1fr 280px',
-      gap: '20px',
-    },
-
     productsGrid: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(auto-fill, minmax(170px, 1fr))',
+      gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))',
       gap: '15px',
     },
     productCard: {
@@ -334,16 +298,6 @@ export default function HealMartPage() {
       fontWeight: '600',
       cursor: 'pointer',
     },
-
-    // Special Offers Sidebar Card
-    specialCard: {
-      backgroundColor: '#ffffff',
-      borderRadius: '12px',
-      border: '1px solid #eaeaea',
-      padding: '16px',
-    },
-
-    // Feature Footer Bar
     featureFooter: {
       backgroundColor: '#ffffff',
       borderTop: '1px solid #eaeaea',
@@ -364,42 +318,35 @@ export default function HealMartPage() {
     <div style={styles.container}>
       <Header />
       
-      {/* Main Container Layout */}
       <div style={styles.mainLayout}>
-        
-        {/* Left Sidebar Category & Promos */}
         <div style={styles.sidebar}>
-          
-          {/* Categories Accordion/Box */}
-          <div style={styles.categoryBox}>
-            <div style={styles.categoryHeader}>
-              <span>☰ All Categories</span>
-            </div>
-            <ul style={styles.categoryList}>
-              {[
-                { name: 'Natural Carbs', icon: '🌾' },
-                { name: 'Healthy Fats & Oils', icon: '🏺' },
-                { name: 'Nuts & Seeds', icon: '🥜' },
-                { name: 'Dried Fruits', icon: '🍇' },
-                { name: 'Herbal Teas', icon: '🍵' },
-                { name: 'Superfoods', icon: '🌿' },
-                { name: 'Food Supplements', icon: '💊' },
-                { name: 'Plant-Based Proteins', icon: '🌱' },
-                { name: 'Healthy Snacks', icon: '🍿' },
-                { name: 'Beverages', icon: '🧃' },
-                { name: 'Gluten Free', icon: '🌾' },
-                { name: 'Baby & Kids', icon: '👶' },
-                { name: 'Personal Care', icon: '🧴' },
-                { name: 'Eco-Friendly Products', icon: '🍃' },
-              ].map((cat, i) => (
-                <li key={i} style={styles.categoryListItem}>
-                  <span>{cat.icon}</span> {cat.name}
-                </li>
-              ))}
-            </ul>
+          <div style={styles.sidebarHeader}>
+            <span>☰ All Categories</span>
           </div>
+          <ul style={styles.categoryListUl}>
+            <li
+              style={styles.categoryItem(selectedCategory === 'ALL')}
+              onClick={() => setSelectedCategory('ALL')}
+            >
+              <span>All Products</span>
+              <span style={styles.categoryCountBadge}>({products.length})</span>
+            </li>
+            {categories.map((cat) => {
+              const count = getCategoryCount(cat.category_id);
+              const isSelected = String(selectedCategory) === String(cat.category_id);
+              return (
+                <li
+                  key={cat.category_id}
+                  style={styles.categoryItem(isSelected)}
+                  onClick={() => setSelectedCategory(cat.category_id)}
+                >
+                  <span>{cat.cat_name}</span>
+                  <span style={styles.categoryCountBadge}>({count})</span>
+                </li>
+              );
+            })}
+          </ul>
 
-          {/* Why Shop With Us Box */}
           <div style={styles.whyShopBox}>
             <div style={styles.whyTitle}><span>🛡️</span> Why Shop with Us?</div>
             <div style={styles.whyItem}><span>✔</span> 100% Natural Products</div>
@@ -410,7 +357,6 @@ export default function HealMartPage() {
             <div style={styles.whyItem}><span>✔</span> Easy Returns</div>
           </div>
 
-          {/* Subscribe Banner */}
           <div style={styles.subscribeBox}>
             <h4 style={{ margin: '0 0 8px 0', fontSize: '14px' }}>Subscribe & Save</h4>
             <p style={{ margin: '0 0 12px 0', fontSize: '11px', color: '#e8f5e9' }}>Get 10% off on your first order.</p>
@@ -418,13 +364,9 @@ export default function HealMartPage() {
               Subscribe Now
             </button>
           </div>
-
         </div>
 
-        {/* Right Content Area */}
         <div style={styles.contentArea}>
-          
-          {/* Hero Banner Section */}
           <div style={styles.heroBanner}>
             <div style={styles.heroTextContent}>
               <h2 style={styles.heroTitle}>Natural Products for a Healthier You</h2>
@@ -443,99 +385,42 @@ export default function HealMartPage() {
             </div>
           </div>
 
-          {/* Small Category Circle Icons */}
-          <div style={styles.circlesRow}>
-            {[
-              { name: 'Natural Carbs', icon: '🌾' },
-              { name: 'Healthy Fats & Oils', icon: '🏺' },
-              { name: 'Nuts & Seeds', icon: '🥜' },
-              { name: 'Dried Fruits', icon: '🍇' },
-              { name: 'Herbal Teas', icon: '🍵' },
-              { name: 'Superfoods', icon: '🌿' },
-              { name: 'Supplements', icon: '💊' },
-              { name: 'Plant Proteins', icon: '🌱' },
-              { name: 'Healthy Snacks', icon: '🍿' },
-              { name: 'Beverages', icon: '🧃' },
-            ].map((c, i) => (
-              <div key={i} style={styles.circleItem}>
-                <div style={styles.circleImgBox}>{c.icon}</div>
-                <span style={styles.circleText}>{c.name}</span>
-              </div>
-            ))}
-          </div>
+          <div>
+            <div style={styles.sectionHeader}>
+              <h3 style={styles.sectionTitle}>
+                {selectedCategory === 'ALL' ? 'All Products' : 'Filtered Products'}
+              </h3>
+              <a href="#all" style={styles.viewAllLink} onClick={(e) => { e.preventDefault(); setSelectedCategory('ALL'); }}>View All Products →</a>
+            </div>
 
-          {/* Lower Grid: Best Sellers + Special Offers Sidebar */}
-          <div style={styles.lowerGrid}>
-            
-            {/* Best Sellers Section */}
-            <div>
-              <div style={styles.sectionHeader}>
-                <h3 style={styles.sectionTitle}>Best Sellers</h3>
-                <a href="#all" style={styles.viewAllLink}>View All Products →</a>
-              </div>
+            {loading && <p style={{ fontSize: '13px', color: '#718096' }}>Loading products from server...</p>}
+            {error && <p style={{ fontSize: '13px', color: '#e53e3e' }}>Error: {error}</p>}
 
+            {!loading && !error && (
               <div style={styles.productsGrid}>
-                {[
-                  { name: 'Raw Natural Honey', weight: '500g', price: 'RWF 5,000', rating: '★★★★★ (126)', img: 'https://images.unsplash.com/photo-1587049352847-4a222e784d38?auto=format&fit=crop&w=300&q=80' },
-                  { name: 'Almonds', weight: '250g', price: 'RWF 4,000', rating: '★★★★★ (85)', img: 'https://images.unsplash.com/photo-1508061253366-f7da154b6d46?auto=format&fit=crop&w=300&q=80' },
-                  { name: 'Chia Seeds', weight: '250g', price: 'RWF 3,500', rating: '★★★★★ (72)', img: 'https://images.unsplash.com/photo-1518843875459-f738682238a6?auto=format&fit=crop&w=300&q=80' },
-                  { name: 'Whole Grain Oats', weight: '500g', price: 'RWF 2,800', rating: '★★★★★ (98)', img: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?auto=format&fit=crop&w=300&q=80' },
-                  { name: 'Green Tea', weight: '20 Tea Bags', price: 'RWF 2,500', rating: '★★★★★ (63)', img: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?auto=format&fit=crop&w=300&q=80' },
-                  { name: 'Plant Protein Powder', weight: '500g', price: 'RWF 8,500', rating: '★★★★★ (54)', img: 'https://images.unsplash.com/photo-1579722820308-d74e571700a0?auto=format&fit=crop&w=300&q=80' },
-                ].map((item, idx) => (
+                {filteredProducts.map((item, idx) => (
                   <div key={idx} style={styles.productCard}>
                     <div>
-                      <img src={item.img} alt={item.name} style={styles.productImg} />
-                      <h4 style={styles.productName}>{item.name}</h4>
-                      <p style={styles.productWeight}>{item.weight}</p>
-                      <div style={styles.ratingStars}>{item.rating}</div>
+                      <img src={item.image || item.img} alt={item.product_name || item.name} style={styles.productImg} />
+                      <h4 style={styles.productName}>{item.product_name || item.name}</h4>
+                      <p style={styles.productWeight}>{item.weight || item.helping_area || 'N/A'}</p>
+                      <div style={styles.ratingStars}>{item.rating || '★★★★★'}</div>
                     </div>
                     <div style={styles.productPriceRow}>
-                      <span style={styles.priceTag}>{item.price}</span>
+                      <span style={styles.priceTag}>{item.price ? `RWF ${item.price}` : 'N/A'}</span>
                       <button style={styles.addToCartBtn}>Add to Cart</button>
                     </div>
                   </div>
                 ))}
+                {filteredProducts.length === 0 && (
+                  <p style={{ fontSize: '13px', color: '#718096', gridColumn: '1 / -1' }}>No products found in this category.</p>
+                )}
               </div>
-            </div>
-
-            {/* Special Offers Column */}
-            <div>
-              <div style={styles.sectionHeader}>
-                <h3 style={styles.sectionTitle}>Special Offers</h3>
-                <a href="#offers" style={styles.viewAllLink}>View All →</a>
-              </div>
-              <div style={styles.specialCard}>
-                <div style={{ backgroundColor: '#2d6a4f', color: '#ffffff', display: 'inline-block', padding: '2px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 'bold', marginBottom: '10px' }}>10% OFF</div>
-                <img src="https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=300&q=80" alt="Bundle" style={{ width: '100%', height: '120px', objectFit: 'cover', borderRadius: '8px', marginBottom: '10px' }} />
-                <h4 style={{ fontSize: '13px', fontWeight: '700', margin: '0 0 4px 0' }}>Superfood Bundle</h4>
-                <p style={{ fontSize: '11px', color: '#718096', margin: '0 0 8px 0' }}>Boost your health naturally</p>
-                <div style={{ fontSize: '13px', fontWeight: 'bold', color: '#1b4332', marginBottom: '12px' }}>
-                  RWF 25,000 <span style={{ textDecoration: 'line-through', color: '#a0aec0', fontSize: '11px', fontWeight: 'normal' }}>RWF 28,000</span>
-                </div>
-                <button style={{ width: '100%', backgroundColor: '#2d6a4f', color: '#ffffff', border: 'none', padding: '8px', borderRadius: '6px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
-                  Shop Now
-                </button>
-              </div>
-
-              {/* Help box */}
-              <div style={{ ...styles.specialCard, marginTop: '20px' }}>
-                <h4 style={{ fontSize: '13px', fontWeight: '700', margin: '0 0 4px 0' }}>Need Help Choosing?</h4>
-                <p style={{ fontSize: '11px', color: '#718096', margin: '0 0 10px 0' }}>Our nutrition experts are here for you.</p>
-                <button style={{ width: '100%', backgroundColor: '#25D366', color: '#ffffff', border: 'none', padding: '8px', borderRadius: '6px', fontWeight: 'bold', fontSize: '12px', cursor: 'pointer' }}>
-                  Chat on WhatsApp
-                </button>
-              </div>
-
-            </div>
-
+            )}
           </div>
-
         </div>
-
       </div>
 
-      {/* Feature Footer Bar */}
       <div style={styles.featureFooter}>
         <div style={styles.featureItem}>
           <span style={{ fontSize: '24px' }}>🚚</span>
@@ -566,7 +451,6 @@ export default function HealMartPage() {
           </div>
         </div>
       </div>
-
     </div>
   );
 }

@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const API = 'http://localhost:5000/api/products';
+const CATEGORIES_API = 'http://localhost:5000/api/categories';
 
 // ==========================================
-// 1. CATEGORY LIST COMPONENT
+// 1. PRODUCT LIST COMPONENT
 // ==========================================
 export function CategoryList({ onEdit, onAddNew }) {
   const [categories, setCategories] = useState([]);
@@ -19,12 +20,12 @@ export function CategoryList({ onEdit, onAddNew }) {
       const res = await axios.get(API);
       setCategories(res.data);
     } catch (err) {
-      console.error("Error fetching categories", err);
+      console.error("Error fetching products", err);
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this category?")) {
+    if (window.confirm("Are you sure you want to delete this product?")) {
       await axios.delete(`${API}/${id}`);
       fetchCategories();
     }
@@ -219,6 +220,9 @@ export function CategoryList({ onEdit, onAddNew }) {
                     <div>
                       <span style={styles.badge(c.status)}>{c.status || 'N/A'}</span>
                     </div>
+                    <div style={styles.metaText}>
+                      <strong>Category:</strong> {c.resolved_category_name || c.cat_name || c.category_name || c.category_id || 'N/A'}
+                    </div>
                     <div style={styles.metaText}><strong>Quantity:</strong> {c.quantity || 'N/A'}</div>
                     <div style={styles.metaText}><strong>Price:</strong> {c.price ? `$${c.price}` : 'N/A'}</div>
                     <div style={styles.metaText}><strong>Area:</strong> {c.helping_area || 'N/A'}</div>
@@ -249,7 +253,7 @@ export function CategoryList({ onEdit, onAddNew }) {
             );
           })
         ) : (
-          <div style={styles.emptyState}>No categories found.</div>
+          <div style={styles.emptyState}>No products found.</div>
         )}
       </div>
     </div>
@@ -257,10 +261,12 @@ export function CategoryList({ onEdit, onAddNew }) {
 }
 
 // ==========================================
-// 2. CATEGORY FORM COMPONENT (Add / Edit)
+// 2. PRODUCT FORM COMPONENT (Add / Edit)
 // ==========================================
 export function CategoryForm({ categoryData, isEditMode, onCancel, onSuccess }) {
   const [catName, setCatName] = useState('');
+  const [categoryId, setCategoryId] = useState('');
+  const [categoriesList, setCategoriesList] = useState([]);
   const [status, setStatus] = useState('Active');
   const [quantity, setQuantity] = useState('');
   const [price, setPrice] = useState('');
@@ -271,8 +277,22 @@ export function CategoryForm({ categoryData, isEditMode, onCancel, onSuccess }) 
   const [preview, setPreview] = useState('');
 
   useEffect(() => {
+    fetchCategoriesDropdown();
+  }, []);
+
+  const fetchCategoriesDropdown = async () => {
+    try {
+      const res = await axios.get(CATEGORIES_API);
+      setCategoriesList(res.data);
+    } catch (err) {
+      console.error("Error fetching categories dropdown", err);
+    }
+  };
+
+  useEffect(() => {
     if (isEditMode && categoryData) {
       setCatName(categoryData.product_name || '');
+      setCategoryId(categoryData.category_id || '');
       setStatus(categoryData.status || 'Active');
       setQuantity(categoryData.quantity || '');
       setPrice(categoryData.price || '');
@@ -296,6 +316,7 @@ export function CategoryForm({ categoryData, isEditMode, onCancel, onSuccess }) 
     try {
       const formData = new FormData();
       formData.append('product_name', catName);
+      formData.append('category_id', categoryId);
       formData.append('status', status);
       formData.append('quantity', quantity);
       formData.append('price', price);
@@ -321,8 +342,8 @@ export function CategoryForm({ categoryData, isEditMode, onCancel, onSuccess }) 
 
       onSuccess();
     } catch (err) {
-      console.error("Error saving category", err);
-      alert("Failed to save category.");
+      console.error("Error saving product", err);
+      alert("Failed to save product.");
     }
   };
 
@@ -430,19 +451,36 @@ export function CategoryForm({ categoryData, isEditMode, onCancel, onSuccess }) 
 
   return (
     <div style={styles.container}>
-      <h2 style={styles.header}>{isEditMode ? '✏️ Edit Category' : '➕ Add New Product'}</h2>
+      <h2 style={styles.header}>{isEditMode ? '✏️ Edit Product' : '➕ Add New Product'}</h2>
 
       <form onSubmit={handleSubmit}>
         <div style={styles.formGroup}>
-          <label style={styles.label}>Category Name:</label>
+          <label style={styles.label}>Product Name:</label>
           <input
             type="text"
             value={catName}
             onChange={(e) => setCatName(e.target.value)}
             required
             style={styles.input}
-            placeholder="Enter category name"
+            placeholder="Enter product name"
           />
+        </div>
+
+        <div style={styles.formGroup}>
+          <label style={styles.label}>Category:</label>
+          <select
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
+            required
+            style={styles.select}
+          >
+            <option value="">-- Select Category --</option>
+            {categoriesList.map((cat) => (
+              <option key={cat.category_id} value={cat.category_id}>
+                {cat.cat_name}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div style={styles.formGroup}>
@@ -530,7 +568,7 @@ export function CategoryForm({ categoryData, isEditMode, onCancel, onSuccess }) 
 
         <div style={styles.buttonContainer}>
           <button type="submit" style={styles.submitBtn}>
-            {isEditMode ? 'Update Category' : 'Save Category'}
+            {isEditMode ? 'Update Product' : 'Save Product'}
           </button>
           <button type="button" onClick={onCancel} style={styles.cancelBtn}>
             Cancel
