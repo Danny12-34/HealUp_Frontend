@@ -6,7 +6,7 @@ import CategoryList from './Categories/CategoryList';
 import MainPhotoList from './MainPhoto/MainPhotoList';
 import ProductList from './Product/ProductList';
 
-const API_BASE = 'http://localhost:5000/api';
+const API_BASE = 'https://heal-up-backend-pi.vercel.app/';
 
 export default function ManagerDashboard() {
   const [activeTab, setActiveTab] = useState('overview');

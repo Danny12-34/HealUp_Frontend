@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API = 'http://localhost:5000/api/products';
-const CATEGORY_API = 'http://localhost:5000/api/categories';
+const API = 'https://heal-up-backend-pi.vercel.app//products';
+const CATEGORY_API = 'https://heal-up-backend-pi.vercel.app//categories';
 
 export default function ProductList() {
   const [products, setProducts] = useState([]);

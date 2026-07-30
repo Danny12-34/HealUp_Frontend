@@ -19,7 +19,7 @@ export default function HomePage() {
     const fetchHomeData = async () => {
       setLoading(true);
       try {
-        const response = await fetch('http://localhost:5000/api/products');
+        const response = await fetch('https://heal-up-backend-pi.vercel.app//products');
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -803,7 +803,7 @@ export default function HomePage() {
           </button>
         </div>
         <div className="products-grid">
-          {loading && <div className="empty-state">Loading products from http://localhost:5000/api/products...</div>}
+          {loading && <div className="empty-state">Loading products from https://heal-up-backend-pi.vercel.app//products...</div>}
           {error && <div className="error-state">{error}</div>}
           {!loading && !error && featuredProducts.length === 0 && (
             <div className="empty-state">No products found.</div>
