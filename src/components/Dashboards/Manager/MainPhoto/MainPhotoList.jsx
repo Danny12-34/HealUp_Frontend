@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API = 'https://heal-up-backend-pi.vercel.app/mainphoto';
+const API = 'https://heal-up-backend-pi.vercel.app/api/mainphoto';
 
 // ==========================================
 // 1. MAIN PHOTO LIST COMPONENT

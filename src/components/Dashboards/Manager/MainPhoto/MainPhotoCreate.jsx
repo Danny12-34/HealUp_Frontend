@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API = 'https://heal-up-backend-pi.vercel.app/mainphotos';
+const API = 'https://heal-up-backend-pi.vercel.app/api/mainphotos';
 
 export default function MainPhotoCreate({ editingPhoto, onClearEdit }) {
   const [form, setForm] = useState({ photo_name: '', description: '', direction: '', image: null });

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API = 'https://heal-up-backend-pi.vercel.app/categories';
+const API = 'https://heal-up-backend-pi.vercel.app/api/categories';
 
 // ==========================================
 // 1. CATEGORY LIST COMPONENT
