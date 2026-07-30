@@ -9,8 +9,8 @@ export default function HealMartPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const PRODUCTS_API = 'https://heal-up-backend-pi.vercel.app//products';
-  const CATEGORIES_API = 'https://heal-up-backend-pi.vercel.app//categories';
+  const PRODUCTS_API = 'https://heal-up-backend-pi.vercel.app/products';
+  const CATEGORIES_API = 'https://heal-up-backend-pi.vercel.app/categories';
 
   useEffect(() => {
     fetchData();

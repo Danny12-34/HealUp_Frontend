@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const API = 'https://heal-up-backend-pi.vercel.app//categories';
+const API = 'https://heal-up-backend-pi.vercel.app/categories';
 
 export default function CategoryCreate({ editingCategory, onClearEdit }) {
   const [form, setForm] = useState({ cat_name: '', status: '', image: null });
